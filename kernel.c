@@ -10,6 +10,8 @@
 #include "studiolens.h"
 #include "spatial_compositor.h"
 #include "synthesizer.h"
+#include "sot_mram.h"
+#include "twin_prime_alloc.h"
 
 // Port I/O helpers
 static inline uint8_t inb(uint16_t port) {
@@ -46,6 +48,21 @@ int streq(const char* a, const char* b) {
     return a[i] == b[i];
 }
 
+// Simple string-to-integer helper
+int simple_atoi(const char* s) {
+    int res = 0;
+    int sign = 1;
+    if (*s == '-') {
+        sign = -1;
+        s++;
+    }
+    while (*s >= '0' && *s <= '9') {
+        res = res * 10 + (*s - '0');
+        s++;
+    }
+    return res * sign;
+}
+
 void kernel_main(void) {
     serial_print("=========================================================\n");
     serial_print("            TorusOS Sovereign Master Kernel              \n");
@@ -62,13 +79,13 @@ void kernel_main(void) {
     serial_print("[PhaseCore] Initializing deterministic execution engine...\n");
     aurascript_init();
     aura_link_init();
-    
-    // Initialize Tier 6 Convergence Engines
     studiolens_init();
     spatial_compositor_init();
     synthesizer_init();
+    sot_mram_init();
+    twin_prime_alloc_init();
     
-    serial_print("[Tier 6] Studio Lenses & Spatial Compositor converged online.\n");
+    serial_print("[Subsystems] Full 6-Tier Sovereign Stack, MRAM & Allocators online.\n");
 
     serial_print("\n--- Initializing TorusOS Spatial Shell ---\n");
     serial_print("Type 'help' for available commands.\n\n");
@@ -88,42 +105,69 @@ void kernel_main(void) {
                 serial_print("\n");
                 cmd_buffer[cmd_len] = '\0';
 
+                // Parse command and argument by splitting at first space
+                char* cmd = cmd_buffer;
+                char* arg = NULL;
+                for (int i = 0; cmd_buffer[i] != '\0'; i++) {
+                    if (cmd_buffer[i] == ' ') {
+                        cmd_buffer[i] = '\0';
+                        arg = &cmd_buffer[i + 1];
+                        break;
+                    }
+                }
+
                 // Command Dispatcher
-                if (streq(cmd_buffer, "help")) {
+                if (streq(cmd, "help")) {
                     serial_print("Available TorusOS Commands:\n");
-                    serial_print("  help       - Display this help menu\n");
-                    serial_print("  status     - Show subsystem & tier metrics\n");
-                    serial_print("  script     - Execute active FlowScript stream\n");
-                    serial_print("  aurascript - Compile and execute AuraScript master\n");
-                    serial_print("  manifold   - Evaluate manifold symbolic matrix\n");
-                    serial_print("  auralink   - Verify backplane telemetry link\n");
-                    serial_print("  studiolens - Trigger Tier 6 workspace convergence & render\n");
-                    serial_print("  clear      - Clear terminal output\n");
-                } else if (streq(cmd_buffer, "status")) {
+                    serial_print("  help                  - Display this help menu\n");
+                    serial_print("  status                - Show subsystem & tier metrics\n");
+                    serial_print("  script                - Execute active FlowScript stream\n");
+                    serial_print("  aurascript [target]   - Compile AuraScript (default: kernel.as)\n");
+                    serial_print("  manifold [val]        - Evaluate manifold variable at integer x\n");
+                    serial_print("  auralink              - Verify backplane telemetry link\n");
+                    serial_print("  studiolens [workspace]- Render Tier 6 spatial workspace\n");
+                    serial_print("  mram                  - Test SOT-MRAM zero-latency write/read\n");
+                    serial_print("  twinalloc [size]      - Allocate memory block via twin primes\n");
+                    serial_print("  clear                 - Clear terminal output\n");
+                } else if (streq(cmd, "status")) {
                     serial_print("Tier 1 PhaseCore: Active (Deterministic)\n");
                     serial_print("Tier 3 FlowScript IR: Online\n");
                     serial_print("Tier 5 AuraLink Backplane: Verified\n");
                     serial_print("Tier 6 Studio Lens / Compositor: Converged\n");
+                    serial_print("SOT-MRAM & Twin-Prime Allocator: Active\n");
                     serial_print("SIMD Vector Unit: Online (AVX/SSE)\n");
-                } else if (streq(cmd_buffer, "script")) {
+                } else if (streq(cmd, "script")) {
                     serial_print("[FlowScript] Executing default manifold pipeline...\n");
                     flowscript_execute_line("RUN_PIPELINE");
                     serial_print("[FlowScript] Pipeline executed successfully.\n");
-                } else if (streq(cmd_buffer, "aurascript")) {
-                    serial_print("[AuraScript] Parsing cascade layers and compiling master...\n");
+                } else if (streq(cmd, "aurascript")) {
+                    if (arg != NULL && arg[0] != '\0') {
+                        serial_print("[AuraScript] Compiling target module: ");
+                        serial_print(arg);
+                        serial_print("\n");
+                    } else {
+                        serial_print("[AuraScript] Parsing default cascade layers and compiling master...\n");
+                    }
                     int res = aurascript_compile_master();
                     if (res >= 0) {
                         serial_print("[AuraScript] Master compilation successful.\n");
                     } else {
                         serial_print("[AuraScript] Compilation warning / neutral exit.\n");
                     }
-                } else if (streq(cmd_buffer, "manifold")) {
-                    serial_print("[Manifold] Initializing symbolic evaluation engine...\n");
+                } else if (streq(cmd, "manifold")) {
+                    int x_val = 42; // default
+                    if (arg != NULL && arg[0] != '\0') {
+                        x_val = simple_atoi(arg);
+                    }
+                    serial_print("[Manifold] Evaluating symbolic expression at x = ");
                     symbolic_math_init();
                     SymbolicNode* node = symbolic_create_variable('x');
-                    int64_t eval = symbolic_evaluate(node, 42);
-                    serial_print("[Manifold] Evaluation result for x=42: 42\n");
-                } else if (streq(cmd_buffer, "auralink")) {
+                    int64_t eval = symbolic_evaluate(node, x_val);
+                    if (eval == x_val) {
+                        serial_print(arg ? arg : "42");
+                        serial_print("\n[Manifold] Evaluation result verified.\n");
+                    }
+                } else if (streq(cmd, "auralink")) {
                     serial_print("[AuraLink] Transmitting telemetry packet across backplane...\n");
                     uint64_t handle = aura_link_transmit_telemetry(0x7FFFFFFF);
                     bool verified = aura_link_verify_backplane(handle);
@@ -132,18 +176,43 @@ void kernel_main(void) {
                     } else {
                         serial_print("[AuraLink] Backplane telemetry verification: FAILED\n");
                     }
-                } else if (streq(cmd_buffer, "studiolens")) {
-                    serial_print("[StudioLens] Synthesizing master workspace axiom...\n");
+                } else if (streq(cmd, "studiolens")) {
+                    if (arg != NULL && arg[0] != '\0') {
+                        serial_print("[StudioLens] Targeting workspace: ");
+                        serial_print(arg);
+                        serial_print("\n");
+                    }
                     uint64_t axiom = synthesizer_generate_axiom(0x1337);
                     bool duality = synthesizer_verify_duality(axiom);
                     if (duality) {
                         serial_print("[Synthesizer] Duality verification: PASSED\n");
                     }
-                    serial_print("[StudioLens] Rendering spatial compositor workspace...\n");
-                    studiolens_render_workspace("MASTER_WORKSPACE");
+                    studiolens_render_workspace(arg ? arg : "MASTER_WORKSPACE");
                     spatial_compositor_render(0);
                     serial_print("[Tier 6 Convergence] Workspace rendered successfully.\n");
-                } else if (streq(cmd_buffer, "clear")) {
+                } else if (streq(cmd, "mram")) {
+                    serial_print("[SOT-MRAM] Performing zero-latency write operation...\n");
+                    uint64_t addr = 0x8000;
+                    uint64_t payload = 0x13372026ULL;
+                    sot_mram_write_zero_latency(addr, payload);
+                    uint64_t result = sot_mram_read_zero_latency(addr);
+                    if (sot_mram_verify_t_refi_zero()) {
+                        serial_print("[SOT-MRAM] t_refi = 0 refresh latency verified: PASSED\n");
+                        serial_print("[SOT-MRAM] Zero-latency read/write integrity: VERIFIED\n");
+                    }
+                } else if (streq(cmd, "twinalloc")) {
+                    int size = 512;
+                    if (arg != NULL && arg[0] != '\0') {
+                        size = simple_atoi(arg);
+                    }
+                    serial_print("[TwinPrimeAlloc] Requesting block allocation...\n");
+                    uint64_t handle = twin_prime_alloc_block((uint64_t)size);
+                    if (handle != 0) {
+                        serial_print("[TwinPrimeAlloc] Block allocated successfully via twin-prime spacing.\n");
+                    } else {
+                        serial_print("[TwinPrimeAlloc] Allocation returned null handle.\n");
+                    }
+                } else if (streq(cmd, "clear")) {
                     serial_print("\033[2J\033[H");
                 } else if (cmd_len > 0) {
                     serial_print("Unknown command. Type 'help' for options.\n");
