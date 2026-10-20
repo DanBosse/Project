@@ -12,6 +12,9 @@
 #include "synthesizer.h"
 #include "sot_mram.h"
 #include "twin_prime_alloc.h"
+#include "omni_envelope.h"
+#include "enterprise_telemetry.h"
+#include "benchmark.h"
 
 // Port I/O helpers
 static inline uint8_t inb(uint16_t port) {
@@ -63,6 +66,19 @@ int simple_atoi(const char* s) {
     return res * sign;
 }
 
+// Trim trailing whitespace and carriage returns from argument
+void trim_arg(char* s) {
+    if (!s) return;
+    int i = 0;
+    while (s[i] != '\0') {
+        if (s[i] == '\r' || s[i] == '\n' || s[i] == ' ') {
+            s[i] = '\0';
+            break;
+        }
+        i++;
+    }
+}
+
 void kernel_main(void) {
     serial_print("=========================================================\n");
     serial_print("            TorusOS Sovereign Master Kernel              \n");
@@ -84,8 +100,9 @@ void kernel_main(void) {
     synthesizer_init();
     sot_mram_init();
     twin_prime_alloc_init();
+    benchmark_init();
     
-    serial_print("[Subsystems] Full 6-Tier Sovereign Stack, MRAM & Allocators online.\n");
+    serial_print("[Subsystems] Full 6-Tier Sovereign Convergence Stack online.\n");
 
     serial_print("\n--- Initializing TorusOS Spatial Shell ---\n");
     serial_print("Type 'help' for available commands.\n\n");
@@ -115,6 +132,7 @@ void kernel_main(void) {
                         break;
                     }
                 }
+                trim_arg(arg);
 
                 // Command Dispatcher
                 if (streq(cmd, "help")) {
@@ -125,9 +143,14 @@ void kernel_main(void) {
                     serial_print("  aurascript [target]   - Compile AuraScript (default: kernel.as)\n");
                     serial_print("  manifold [val]        - Evaluate manifold variable at integer x\n");
                     serial_print("  auralink              - Verify backplane telemetry link\n");
-                    serial_print("  studiolens [workspace]- Render Tier 6 spatial workspace\n");
+                    serial_print("  studiolens [grid|stacked|spawn|workspace] - Render Tier 6 spatial workspace\n");
                     serial_print("  mram                  - Test SOT-MRAM zero-latency write/read\n");
                     serial_print("  twinalloc [size]      - Allocate memory block via twin primes\n");
+                    serial_print("  benchmark             - [Phase 1] Run MRAM & Twin-Prime saturation suite\n");
+                    serial_print("  phasecore             - [Hidden] Execute raw Tier 1 opcode dispatch\n");
+                    serial_print("  omni                  - [Hidden] Unpack Sovereign Omnifile into AuraScript\n");
+                    serial_print("  telemetry             - [Hidden] Stream enterprise diagnostics to Studio Lens\n");
+                    serial_print("  vtx                   - [Hidden] Compile structural tensors to FlowScript IR\n");
                     serial_print("  clear                 - Clear terminal output\n");
                 } else if (streq(cmd, "status")) {
                     serial_print("Tier 1 PhaseCore: Active (Deterministic)\n");
@@ -159,13 +182,17 @@ void kernel_main(void) {
                     if (arg != NULL && arg[0] != '\0') {
                         x_val = simple_atoi(arg);
                     }
-                    serial_print("[Manifold] Evaluating symbolic expression at x = ");
+                    
                     symbolic_math_init();
+
+                    serial_print("[Manifold] Evaluating symbolic expression at x = ");
+                    serial_print(arg ? arg : "42");
+                    serial_print("\n");
+
                     SymbolicNode* node = symbolic_create_variable('x');
                     int64_t eval = symbolic_evaluate(node, x_val);
                     if (eval == x_val) {
-                        serial_print(arg ? arg : "42");
-                        serial_print("\n[Manifold] Evaluation result verified.\n");
+                        serial_print("[Manifold] Evaluation result verified.\n");
                     }
                 } else if (streq(cmd, "auralink")) {
                     serial_print("[AuraLink] Transmitting telemetry packet across backplane...\n");
@@ -178,16 +205,28 @@ void kernel_main(void) {
                     }
                 } else if (streq(cmd, "studiolens")) {
                     if (arg != NULL && arg[0] != '\0') {
-                        serial_print("[StudioLens] Targeting workspace: ");
-                        serial_print(arg);
-                        serial_print("\n");
+                        if (streq(arg, "grid")) {
+                            studiolens_set_layout(LAYOUT_GRID);
+                            serial_print("[StudioLens] Layout switched to GRID (2x2 split).\n");
+                        } else if (streq(arg, "stacked")) {
+                            studiolens_set_layout(LAYOUT_STACKED);
+                            serial_print("[StudioLens] Layout switched to STACKED (z-index).\n");
+                        } else if (streq(arg, "spawn")) {
+                            studiolens_set_layout(LAYOUT_FLOATING);
+                            studiolens_spawn_window("TelemetryPanel", 100, 200, 640, 480);
+                            serial_print("[StudioLens] Layout switched to FLOATING (Custom Window Spawn).\n");
+                        } else {
+                            serial_print("[StudioLens] Targeting workspace: ");
+                            serial_print(arg);
+                            serial_print("\n");
+                        }
                     }
                     uint64_t axiom = synthesizer_generate_axiom(0x1337);
                     bool duality = synthesizer_verify_duality(axiom);
                     if (duality) {
                         serial_print("[Synthesizer] Duality verification: PASSED\n");
                     }
-                    studiolens_render_workspace(arg ? arg : "MASTER_WORKSPACE");
+                    studiolens_render_workspace(arg && !streq(arg, "grid") && !streq(arg, "stacked") && !streq(arg, "spawn") ? arg : "MASTER_WORKSPACE");
                     spatial_compositor_render(0);
                     serial_print("[Tier 6 Convergence] Workspace rendered successfully.\n");
                 } else if (streq(cmd, "mram")) {
@@ -212,6 +251,34 @@ void kernel_main(void) {
                     } else {
                         serial_print("[TwinPrimeAlloc] Allocation returned null handle.\n");
                     }
+                } else if (streq(cmd, "benchmark")) {
+                    serial_print("[Phase 1] Executing automated subsystem saturation benchmark...\n");
+                    benchmark_run_mram_saturation(1000);
+                    benchmark_run_twinalloc_stress(500);
+                    serial_print("[Phase 1] Benchmark suite completed successfully.\n");
+                } else if (streq(cmd, "phasecore")) {
+                    serial_print("[PhaseCore] Executing deterministic opcode cycle...\n");
+                    serial_print("[PhaseCore] Opcode stream dispatched -> Lowering to AuraScript...\n");
+                    aurascript_compile_master();
+                    serial_print("[PhaseCore -> AuraScript] Convergence complete.\n");
+                } else if (streq(cmd, "omni")) {
+                    serial_print("[OmniEnvelope] Unpacking XML sovereign state envelope...\n");
+                    omni_envelope_parse();
+                    serial_print("[OmniEnvelope] Binding state to Studio Lens workspace...\n");
+                    studiolens_render_workspace("OMNI_CONVERGENCE_WORKSPACE");
+                    serial_print("[Omni -> StudioLens] Convergence complete.\n");
+                } else if (streq(cmd, "telemetry")) {
+                    serial_print("[Telemetry] Dumping enterprise performance metrics...\n");
+                    enterprise_telemetry_dump();
+                    serial_print("[Telemetry] Piping metrics into AuraLink backplane...\n");
+                    aura_link_transmit_telemetry(0xF00DF00D);
+                    serial_print("[Telemetry -> StudioLens] Visual metrics updated.\n");
+                } else if (streq(cmd, "vtx")) {
+                    serial_print("[VTX Source] Compiling high-level structural tensor source...\n");
+                    serial_print("[VTX Source] Lowering structural declaration into Tier 3 FlowScript IR...\n");
+                    flowscript_execute_line("VTX_COMPILE_TENSORS");
+                    studiolens_render_workspace("VTX_TENSOR_PIPELINE");
+                    serial_print("[VTX -> StudioLens] Tensor convergence complete.\n");
                 } else if (streq(cmd, "clear")) {
                     serial_print("\033[2J\033[H");
                 } else if (cmd_len > 0) {

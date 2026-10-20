@@ -111,7 +111,7 @@ void kernel_print_hex(uint64_t val) {
 }
 
 #define LIMINE_COMMON_MAGIC 0xc7b1dd30df4c8b88, 0x0a82e883a194f07b
-#define LIMINE_FRAMEBUFFER_REQUEST { LIMINE_COMMON_MAGIC, 0x9d5827dcd881dd75, 0xa3148604f6fab11b }
+// [DUPLICATE REMOVED] #define LIMINE_FRAMEBUFFER_REQUEST { LIMINE_COMMON_MAGIC, 0x9d5827dcd881dd75, 0xa3148604f6fab11b }
 
 struct limine_framebuffer {
     void *address;
@@ -134,7 +134,7 @@ struct limine_framebuffer_response {
     struct limine_framebuffer **framebuffers;
 };
 
-struct limine_framebuffer_request {
+// [DUPLICATE REMOVED] struct limine_framebuffer_request {
     uint64_t id[4];
     uint64_t revision;
     struct limine_framebuffer_response *response;
@@ -147,11 +147,7 @@ __attribute__((used, section(".limine_requests_start")))
 static volatile uint64_t limine_requests_start[4] = {0};
 
 __attribute__((used, section(".limine_requests")))
-static volatile struct limine_framebuffer_request framebuffer_request = {
-    .id = LIMINE_FRAMEBUFFER_REQUEST,
-    .revision = 0,
-    .response = NULL
-};
+extern volatile struct limine_framebuffer_request framebuffer_request;
 
 __attribute__((used, section(".limine_requests_end")))
 static volatile uint64_t limine_requests_end[4] = {0};
@@ -211,12 +207,12 @@ void kernel_main(void) {
     const char *instruction_envelope = "<instruction arg1='31' arg2='0'>TENSOR_MAP</instruction>";
     phasecore_interpret_envelope(instruction_envelope);
 
-    if (framebuffer_request.response == NULL) {
+// [DUPLICATE REMOVED]     if (framebuffer_request.response == NULL) {
         kernel_print("[Framebuffer] RESPONSE IS NULL!\\n");
         for (;;) { __asm__ volatile("hlt"); }
     }
 
-    struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
+// [DUPLICATE REMOVED]     struct limine_framebuffer *fb = framebuffer_request.response->framebuffers[0];
     uint64_t frame = 0;
 
     for (;;) {
