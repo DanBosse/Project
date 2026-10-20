@@ -1,0 +1,47 @@
+# Build artifacts & objects
+*.o
+*.iso
+*.img
+*.hdd
+iso/
+iso_root/
+floppy_dir/
+hdd_dir/
+*.bin
+*.sys
+*.conf
+
+# Temporary scratch files
+=
+address
+height
+width
+xml
+cadence_locked
+latest_block
+operational_efficiency
+physical_refresh_hz
+render_fps
+size
+simd_init
+total_blocks*
+vsync_counter
+tiers[i].*
+framebuffers[0]
+
+# Limine embedded repository directory (if tracked separately)
+limine/
+# Additional loose artifact files
+pitch
+xml
+address
+height
+width
+plugin.elf
+# Remaining scratch / configuration artifacts
+AURA_AUDIO_LINK_H
+framebuffers[0]
+kernel.as
+limine.cfg
+manifold_tensor_core.as
+tiers[i].*

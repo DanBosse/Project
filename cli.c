@@ -5,6 +5,10 @@
 extern void kernel_print(const char *str);
 extern bool state_prime_verify(uint64_t n);
 
+#define CLI_BUFFER_SIZE 256
+static char cli_input_buffer[CLI_BUFFER_SIZE];
+static int cli_buffer_index = 0;
+
 // Lightweight string comparison helper for kernel mode
 static int k_strcmp(const char *s1, const char *s2) {
     while (*s1 && (*s1 == *s2)) {
@@ -14,13 +18,20 @@ static int k_strcmp(const char *s1, const char *s2) {
     return *(const unsigned char*)s1 - *(const unsigned char*)s2;
 }
 
-// Check if a string starts with a specific prefix
 static bool k_strncmp(const char *str, const char *prefix, int n) {
     for (int i = 0; i < n; i++) {
         if (str[i] != prefix[i]) return false;
         if (str[i] == '\0') break;
     }
     return true;
+}
+
+// Forward declarations
+void cli_execute_command(const char *cmd);
+
+// Print command prompt
+void cli_print_prompt(void) {
+    kernel_print("\n> ");
 }
 
 // Command: Help Menu
@@ -48,7 +59,7 @@ static void cli_cmd_tensor(void) {
 
 // Command: Prime Verification
 static void cli_cmd_verify(void) {
-    uint64_t test_val = 17; // Default core seed
+    uint64_t test_val = 17;
     kernel_print("\n[CLI] Executing Phase 1: state_prime_verify(17)...\n");
     bool prime_ok = state_prime_verify(test_val);
     if (prime_ok) {
@@ -61,7 +72,6 @@ static void cli_cmd_verify(void) {
 // Main CLI Command Dispatcher
 void cli_execute_command(const char *cmd) {
     while (*cmd == ' ') cmd++;
-
     if (*cmd == '\0') return;
 
     if (k_strcmp(cmd, "help") == 0) {
@@ -78,5 +88,32 @@ void cli_execute_command(const char *cmd) {
     } 
     else {
         kernel_print("\n[CLI] Unknown command. Type 'help' for available options.\n\n");
+    }
+}
+
+// Terminal Character Input Handler (Line Buffering)
+void cli_handle_char(char c) {
+    if (c == '\n' || c == '\r') {
+        cli_input_buffer[cli_buffer_index] = '\0';
+        kernel_print("\n");
+        if (cli_buffer_index > 0) {
+            cli_execute_command(cli_input_buffer);
+        }
+        cli_buffer_index = 0;
+        cli_print_prompt();
+    }
+    else if (c == '\b' || c == 0x7F) {
+        if (cli_buffer_index > 0) {
+            cli_buffer_index--;
+            cli_input_buffer[cli_buffer_index] = '\0';
+            kernel_print("\b \b");
+        }
+    }
+    else if (c >= 32 && c < 127) {
+        if (cli_buffer_index < CLI_BUFFER_SIZE - 1) {
+            cli_input_buffer[cli_buffer_index++] = c;
+            char str[2] = {c, '\0'};
+            kernel_print(str);
+        }
     }
 }
