@@ -16,4 +16,8 @@ void studiolens_render_workspace(const char* workspace_name);
 void studiolens_set_layout(WindowLayoutMode mode);
 void studiolens_spawn_window(const char* title, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
 
+
+/* Telemetry bridge integration */
+void studiolens_telemetry_bridge_init(void);
+
 #endif

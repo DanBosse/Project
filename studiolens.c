@@ -77,3 +77,16 @@ void studiolens_execute_command(const char* args) {
 
     studiolens_render_workspace(current_workspace);
 }
+
+#include "enterprise_telemetry.h"
+
+
+#include "enterprise_telemetry.h"
+
+void studiolens_telemetry_bridge_init(void) {
+    // Dump live enterprise telemetry diagnostics
+    enterprise_telemetry_dump();
+    
+    // Render the StudioLens spatial workspace for telemetry
+    studiolens_render_workspace("telemetry");
+}
