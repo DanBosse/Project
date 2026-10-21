@@ -151,6 +151,7 @@ void kernel_main(void) {
                     serial_print("  manifold [val]        - Evaluate manifold variable at integer x\n");
                     serial_print("  auralink              - Verify backplane telemetry link\n");
                     serial_print("  studiolens [grid|stacked|spawn|workspace] - Render Tier 6 spatial workspace\n");
+                                        serial_print("  aura                                  - Launch Aura OS Artificial Intelligence Core\n");
                                         serial_print("  auracad                               - Launch AuraCad Parametric CAD & Physics Suite\n");
 serial_print("  physicslab                            - Launch AuraSpring physics simulation workspace\n");
                     serial_print("  office                                - Launch Sovereign Office document productivity suite\n");
