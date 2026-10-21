@@ -3,8 +3,8 @@ Geometry, Geodesics, Physics and Advanced Mathematics will converge in a physics
 topological graphics engine
 
 
-type help in terminal 
-type studiolens
-then check the gui
+1 type help in terminal 
+2 type studiolens
+3 then check the gui
 
-have fun exploring
+4 have fun exploring
