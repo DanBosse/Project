@@ -1,3 +1,5 @@
+#include "aura.h"
+#include "auracad.h"
 #include "video_studio.h"
 #include "audio_studio.h"
 #include "graphics_studio.h"
@@ -149,7 +151,8 @@ void kernel_main(void) {
                     serial_print("  manifold [val]        - Evaluate manifold variable at integer x\n");
                     serial_print("  auralink              - Verify backplane telemetry link\n");
                     serial_print("  studiolens [grid|stacked|spawn|workspace] - Render Tier 6 spatial workspace\n");
-                    serial_print("  physicslab                            - Launch AuraSpring physics simulation workspace\n");
+                                        serial_print("  auracad                               - Launch AuraCad Parametric CAD & Physics Suite\n");
+serial_print("  physicslab                            - Launch AuraSpring physics simulation workspace\n");
                     serial_print("  office                                - Launch Sovereign Office document productivity suite\n");
                     serial_print("  videostudio                           - Launch StudioLens Video NLE Suite\n");
                     serial_print("  audiostudio                           - Launch StudioLens Audio DAW & Mixer\n");
@@ -213,6 +216,12 @@ void kernel_main(void) {
                     } else {
                         serial_print("[AuraLink] Backplane telemetry verification: FAILED\n");
                     }
+                } else if (streq(cmd, "aura")) {
+                    aura_init();
+                    aura_render();
+                } else if (streq(cmd, "auracad")) {
+                    auracad_init();
+                    auracad_render();
                 } else if (streq(cmd, "physicslab")) {
                     physics_lab_init();
                     physics_lab_render();
