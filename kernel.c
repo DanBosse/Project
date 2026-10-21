@@ -151,6 +151,9 @@ void kernel_main(void) {
                     serial_print("  studiolens [grid|stacked|spawn|workspace] - Render Tier 6 spatial workspace\n");
                     serial_print("  physicslab                            - Launch AuraSpring physics simulation workspace\n");
                     serial_print("  office                                - Launch Sovereign Office document productivity suite\n");
+                    serial_print("  videostudio                           - Launch StudioLens Video NLE Suite\n");
+                    serial_print("  audiostudio                           - Launch StudioLens Audio DAW & Mixer\n");
+                    serial_print("  graphicsstudio                        - Launch StudioLens Graphics & Design Canvas\n");
                     serial_print("  mram                  - Test SOT-MRAM zero-latency write/read\n");
                     serial_print("  twinalloc [size]      - Allocate memory block via twin primes\n");
                     serial_print("  benchmark             - [Phase 1] Run MRAM & Twin-Prime saturation suite\n");

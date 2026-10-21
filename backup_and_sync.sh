@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-echo "[Git] Staging latest TorusOS subsystems and kernel updates..."
+echo "[Git] Staging latest TorusOS studio suites and help catalog updates..."
 git add .
 
 # Check if there are changes to commit
@@ -9,10 +9,10 @@ if git diff-index --quiet HEAD --; then
     echo "[Git] No uncommitted changes detected."
 else
     echo "[Git] Committing changes..."
-    git commit -m "feat: Integrate video, audio, graphics studios, office suite, and physicslab into TorusOS StudioLens"
+    git commit -m "feat: Fully integrate video, audio, graphics studios and update help catalog in TorusOS"
     
     echo "[Git] Pushing to remote repository..."
-    git push origin main || git push origin master || echo "[Git] Push skipped or configured branch differs. Please check remote."
+    git push origin main || git push origin master || echo "[Git] Push skipped or configured branch differs."
 fi
 
 echo "[ISO Backup] Creating secure backup of master ISO..."
