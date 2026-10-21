@@ -40,4 +40,4 @@ fi
 xorriso -as mkisofs -b boot/limine/limine-bios-cd.bin -no-emul-boot -boot-load-size 4 -boot-info-table --efi-boot boot/limine/limine-uefi-cd.bin -efi-boot-part --efi-boot-image --protective-msdos-label iso_root -o torus-aura-master.iso 2>/dev/null
 
 echo "[5/5] Launching QEMU graphical display..."
-qemu-system-x86_64 -M q35 -m 2G -vga std -cdrom torus-aura-master.iso -boot d -serial stdio
+qemu-system-x86_64 -M q35 -m 2G -vga std -cdrom torus-aura-master.iso -boot d -serial stdio -no-reboot
