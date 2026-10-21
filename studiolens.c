@@ -42,10 +42,10 @@ void studiolens_set_workspace(const char* ws_name) {
 }
 
 void studiolens_spawn_window(const char* title, uint32_t x, uint32_t y, uint32_t w, uint32_t h) {
+    (void)x; (void)y; (void)w; (void)h;
     serial_print("[StudioLens] Spawning custom spatial window -> ");
     serial_print(title ? title : "TelemetryPanel");
     serial_print("\n");
-    
     spatial_compositor_render(0);
 }
 
@@ -74,6 +74,6 @@ void studiolens_execute_command(const char* args) {
             studiolens_spawn_window("ActivePanel", 100, 100, 400, 300);
         }
     }
-    
+
     studiolens_render_workspace(current_workspace);
 }

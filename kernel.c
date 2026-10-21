@@ -1,3 +1,8 @@
+#include "video_studio.h"
+#include "audio_studio.h"
+#include "graphics_studio.h"
+#include "office_suite.h"
+#include "physics_lab.h"
 #include <stdint.h>
 #include <stddef.h>
 #include "torus.h"
@@ -144,6 +149,8 @@ void kernel_main(void) {
                     serial_print("  manifold [val]        - Evaluate manifold variable at integer x\n");
                     serial_print("  auralink              - Verify backplane telemetry link\n");
                     serial_print("  studiolens [grid|stacked|spawn|workspace] - Render Tier 6 spatial workspace\n");
+                    serial_print("  physicslab                            - Launch AuraSpring physics simulation workspace\n");
+                    serial_print("  office                                - Launch Sovereign Office document productivity suite\n");
                     serial_print("  mram                  - Test SOT-MRAM zero-latency write/read\n");
                     serial_print("  twinalloc [size]      - Allocate memory block via twin primes\n");
                     serial_print("  benchmark             - [Phase 1] Run MRAM & Twin-Prime saturation suite\n");
@@ -203,6 +210,21 @@ void kernel_main(void) {
                     } else {
                         serial_print("[AuraLink] Backplane telemetry verification: FAILED\n");
                     }
+                } else if (streq(cmd, "physicslab")) {
+                    physics_lab_init();
+                    physics_lab_render();
+                } else if (streq(cmd, "office")) {
+                    office_suite_init();
+                    office_suite_render();
+                } else if (streq(cmd, "videostudio")) {
+                    video_studio_init();
+                    video_studio_render();
+                } else if (streq(cmd, "audiostudio")) {
+                    audio_studio_init();
+                    audio_studio_render();
+                } else if (streq(cmd, "graphicsstudio")) {
+                    graphics_studio_init();
+                    graphics_studio_render();
                 } else if (streq(cmd, "studiolens")) {
                     if (arg != NULL && arg[0] != '\0') {
                         if (streq(arg, "grid")) {
