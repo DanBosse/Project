@@ -2,11 +2,10 @@
 #define TRICONJECTURAL_H
 
 #include <stdint.h>
-#include <stdbool.h>
 
 void triconjectural_init(void);
-bool triconjectural_verify_anchor(uint64_t tensor_handle, uint64_t truth_index);
-uint64_t triconjectural_dampen_flux(uint64_t manifold_pressure);
-bool triconjectural_validate_twin_spacing(uint64_t thread_addr_a, uint64_t thread_addr_b);
+void triconjectural_search_data(const char* query);
+void triconjectural_search_net(const char* query);
+void triconjectural_search_os(const char* query);
 
-#endif
+#endif // TRICONJECTURAL_H

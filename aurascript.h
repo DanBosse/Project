@@ -4,6 +4,9 @@
 #include <stdint.h>
 
 void aurascript_init(void);
-void aurascript_eval(const char* script);
+int aurascript_compile_master(void);
+void aurascript_eval(const char* expr);
+void aurascript_set_variable(const char* name, int value);
+int aurascript_get_variable(const char* name);
 
-#endif
+#endif // AURASCRIPT_H

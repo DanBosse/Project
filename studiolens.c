@@ -1,11 +1,12 @@
 #include "studiolens.h"
 #include "spatial_compositor.h"
 #include "aurascript.h"
+#include "triconjectural.h"
 #include "torus.h"
 #include <string.h>
 
 static char current_workspace[32] = "TRICONJECTURAL_STUDIO";
-static WindowLayoutMode current_layout = LAYOUT_GRID; // 2x2 layout perfect for tripartite + display
+static WindowLayoutMode current_layout = LAYOUT_GRID;
 
 int char_starts_with_studio(const char* str, const char* prefix) {
     while (*prefix) {
@@ -18,6 +19,7 @@ void studiolens_init(void) {
     serial_print("[StudioLens] Initializing Tripartite StudioLens Environment...\n");
     spatial_compositor_init();
     aurascript_init();
+    triconjectural_init();
 }
 
 void studiolens_set_layout(WindowLayoutMode mode) {
@@ -61,28 +63,23 @@ void studiolens_render_workspace(const char* workspace_name) {
 }
 
 void studiolens_execute_command(const char* args) {
-    serial_print("[Triconjectural Engine] Query execution dispatched...\n");
-
     if (args != NULL && args[0] != '\0') {
-        // Route query based on active search bar target or fallback to general eval
-        if (char_starts_with_studio(args, "search:data ")) {
-            serial_print("[Search Bar 1: Data Files] Query: ");
-            serial_print(args + 12);
-            serial_print("\n");
-        } else if (char_starts_with_studio(args, "search:net ")) {
-            serial_print("[Search Bar 2: Internet] Query: ");
-            serial_print(args + 11);
-            serial_print("\n");
-        } else if (char_starts_with_studio(args, "search:os ")) {
-            serial_print("[Search Bar 3: OS] Query: ");
-            serial_print(args + 10);
-            serial_print("\n");
+        if (char_starts_with_studio(args, "search:data")) {
+            const char* query = args + 11;
+            while (*query == ' ') query++;
+            triconjectural_search_data(query);
+        } else if (char_starts_with_studio(args, "search:net")) {
+            const char* query = args + 10;
+            while (*query == ' ') query++;
+            triconjectural_search_net(query);
+        } else if (char_starts_with_studio(args, "search:os")) {
+            const char* query = args + 9;
+            while (*query == ' ') query++;
+            triconjectural_search_os(query);
         } else {
-            // Default fallback to AuraScript evaluator
             aurascript_eval(args);
         }
     }
-
     studiolens_render_workspace(current_workspace);
 }
 

@@ -39,6 +39,7 @@ void cli_print_prompt(void) {
 static void cli_cmd_help(void) {
     kernel_print("\n=== TorusOS / Triconjectural StudioLens CLI ===\n");
     kernel_print("  help              - Display this help menu\n");
+                        kernel_print("  dashboard             - Render StudioLens live telemetry dashboard\\n");
     kernel_print("  status            - Show subsystem and vector unit status\n");
     kernel_print("  verify            - Run Phase 1 state prime verification (n=17)\n");
     kernel_print("  tensor            - Execute PhaseCore tensor mapping operation\n");
