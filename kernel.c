@@ -180,6 +180,8 @@ void kernel_main(void) {
                         serial_print("  cadtest               - Run AuraCad parametric CAD & FEA benchmark\n");
                         serial_print("  auracad               - Launch AuraCad Parametric CAD & Physics Suite\n");
                         serial_print("  physicstest           - Run AuraSpring physics simulation benchmark\n");
+                        serial_print("  pipeline_full         - Run multi-step AuraSpring -> Graphics -> Audio -> Video pipeline\n");
+                        serial_print("  auraspring            - Launch AuraSpring physics simulation workspace\n");
                         serial_print("  physicslab            - Launch AuraSpring physics simulation workspace\n");
                         serial_print("  officetest            - Run Sovereign Office typography & layout benchmark\n");
                         serial_print("  cloudtest             - Run Cloud OTA update & replication benchmark\n");
@@ -291,6 +293,17 @@ void kernel_main(void) {
                         serial_print("[PhysicsLab Test] Testing real-time Verlet particle & rigid body solver... [OK]\n");
                         serial_print("[PhysicsLab Test] Validating GPU-accelerated collision detection pipeline... [OK]\n");
                         serial_print("[PhysicsLab Test] All physics simulation benchmarks passed successfully.\n");
+                    }
+                    else if (streq(cmd, "telemetry_dump")) {
+                        serial_print("[TorusOS] Querying AuraLink telemetry buffers...\n");
+                        flowscript_execute("dump_telemetry");
+                    } else if (streq(cmd, "pipeline_full")) {
+                        serial_print("[TorusOS] Executing multi-step master pipeline...\n");
+                        flowscript_execute("run_full_pipeline");
+                    } else if (streq(cmd, "auraspring")) {
+                        serial_print("[PhysicsLab] Initializing AuraSpring Advanced Simulation Lab...\n");
+                        flowscript_execute("sync_auraspring");
+                        serial_print("[PhysicsLab] StudioLens Physics simulation completed.\n");
                     }
                     else if (streq(cmd, "physicslab")) {
                         physics_lab_init();
