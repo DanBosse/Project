@@ -1,54 +1,28 @@
-#include <stdint.h>
-#include <stdbool.h>
+#include "aurascript.h"
+#include "torus.h"
+#include "spatial_compositor.h"
 #include <stddef.h>
 
-void serial_print(const char *str);
-extern int aura_audio_stream_bind(uint32_t channel_count, uint32_t sample_rate);
+// Simple freestanding substring search helper
+static int kernel_contains(const char* str, const char* substr) {
+    if (!str || !substr) return 0;
+    for (int i = 0; str[i] != '\0'; i++) {
+        int j = 0;
+        while (substr[j] != '\0' && str[i + j] == substr[j]) {
+            j++;
+        }
+        if (substr[j] == '\0') return 1;
+    }
+    return 0;
+}
 
-typedef enum {
-    OP_NOP = 0x00,
-    OP_PRINT = 0x01,
-    OP_SET_GAIN = 0x02,
-    OP_AURALINK_BIND = 0x03,
-    OP_HALT = 0xFF
-} Opcode;
-
-typedef struct {
-    uint8_t opcode;
-    uint32_t arg;
-} Instruction;
-
-void aurascript_run_vm(void) {
-    serial_print("[AuraScriptVM] Initializing bytecode virtual machine with Auralink bus...\n");
-
-    Instruction program[] = {
-        { OP_PRINT, 0 },
-        { OP_SET_GAIN, 115 }, 
-        { OP_AURALINK_BIND, 96000 }, // Bind 16-channel 96kHz Auralink stream via VM instruction
-        { OP_HALT, 0 }
-    };
-
-    size_t length = sizeof(program) / sizeof(program[0]);
-    for (size_t i = 0; i < length; i++) {
-        switch (program[i].opcode) {
-            case OP_NOP:
-                break;
-            case OP_PRINT:
-                serial_print("[AuraScriptVM] Executing bytecode telemetry broadcast.\n");
-                break;
-            case OP_SET_GAIN:
-                serial_print("[AuraScriptVM] Applied dynamic V-Log 3DLUT gain configuration.\n");
-                break;
-            case OP_AURALINK_BIND:
-                serial_print("[AuraScriptVM] Executing Auralink transport stream bind (16-Ch @ 96kHz)...\n");
-                aura_audio_stream_bind(16, program[i].arg);
-                break;
-            case OP_HALT:
-                serial_print("[AuraScriptVM] VM HALT instruction reached. Execution complete.\n");
-                return;
-            default:
-                serial_print("[AuraScriptVMError] Unknown bytecode opcode.\n");
-                break;
+void aurascript_eval(const char* script) {
+    serial_print("[AuraScript] Evaluating script snippet...\n");
+    if (script != NULL) {
+        if (kernel_contains(script, "GRID") || kernel_contains(script, "grid")) {
+            serial_print("[AuraScript FFI] Triggering layout change -> GRID\n");
+        } else if (kernel_contains(script, "spawn")) {
+            serial_print("[AuraScript FFI] Triggering window spawn command\n");
         }
     }
 }

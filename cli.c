@@ -4,6 +4,7 @@
 // External kernel functions
 extern void kernel_print(const char *str);
 extern bool state_prime_verify(uint64_t n);
+extern void studiolens_execute_command(const char *args);
 
 #define CLI_BUFFER_SIZE 256
 static char cli_input_buffer[CLI_BUFFER_SIZE];
@@ -36,11 +37,14 @@ void cli_print_prompt(void) {
 
 // Command: Help Menu
 static void cli_cmd_help(void) {
-    kernel_print("\n=== TorusOS / Frequency Manifold CLI ===\n");
-    kernel_print("  help          - Display this help menu\n");
-    kernel_print("  status        - Show subsystem and vector unit status\n");
-    kernel_print("  verify        - Run Phase 1 state prime verification (n=17)\n");
-    kernel_print("  tensor        - Execute PhaseCore tensor mapping operation\n\n");
+    kernel_print("\n=== TorusOS / Triconjectural StudioLens CLI ===\n");
+    kernel_print("  help              - Display this help menu\n");
+    kernel_print("  status            - Show subsystem and vector unit status\n");
+    kernel_print("  verify            - Run Phase 1 state prime verification (n=17)\n");
+    kernel_print("  tensor            - Execute PhaseCore tensor mapping operation\n");
+    kernel_print("  search:data [q]   - Triconjectural Data Files Search Bar\n");
+    kernel_print("  search:net [q]    - Triconjectural Internet Search Bar\n");
+    kernel_print("  search:os [q]     - Triconjectural OS State Search Bar\n\n");
 }
 
 // Command: System Status
@@ -48,7 +52,7 @@ static void cli_cmd_status(void) {
     kernel_print("\n[Status] Ring 0 Execution: ACTIVE\n");
     kernel_print("[Status] SIMD Vector Unit: AVX/SSE Initialized\n");
     kernel_print("[Status] PhaseCore Engine: Ready\n");
-    kernel_print("[Status] Manifold State: Stable\n\n");
+    kernel_print("[Status] Triconjectural Engine: Online (Data Files | Internet | OS)\n\n");
 }
 
 // Command: Tensor Dispatch
@@ -76,16 +80,21 @@ void cli_execute_command(const char *cmd) {
 
     if (k_strcmp(cmd, "help") == 0) {
         cli_cmd_help();
-    } 
+    }
     else if (k_strcmp(cmd, "status") == 0) {
         cli_cmd_status();
-    } 
+    }
     else if (k_strcmp(cmd, "verify") == 0 || k_strncmp(cmd, "verify ", 7) == 0) {
         cli_cmd_verify();
-    } 
+    }
     else if (k_strcmp(cmd, "tensor") == 0) {
         cli_cmd_tensor();
-    } 
+    }
+    else if (k_strncmp(cmd, "search:data ", 12) == 0 || 
+             k_strncmp(cmd, "search:net ", 11) == 0 || 
+             k_strncmp(cmd, "search:os ", 10) == 0) {
+        studiolens_execute_command(cmd);
+    }
     else {
         kernel_print("\n[CLI] Unknown command. Type 'help' for available options.\n\n");
     }

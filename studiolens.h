@@ -2,22 +2,24 @@
 #define STUDIOLENS_H
 
 #include <stdint.h>
-#include <stdbool.h>
+#include <stddef.h>
 
 typedef enum {
-    LAYOUT_SINGLE,
     LAYOUT_GRID,
     LAYOUT_STACKED,
     LAYOUT_FLOATING
 } WindowLayoutMode;
 
+// Initialize the Tripartite StudioLens Environment
 void studiolens_init(void);
-void studiolens_render_workspace(const char* workspace_name);
+
+// Layout and Workspace management
 void studiolens_set_layout(WindowLayoutMode mode);
+void studiolens_set_workspace(const char* ws_name);
 void studiolens_spawn_window(const char* title, uint32_t x, uint32_t y, uint32_t w, uint32_t h);
+void studiolens_render_workspace(const char *workspace_name);
 
+// Triconjectural command routing
+void studiolens_execute_command(const char *args);
 
-/* Telemetry bridge integration */
-void studiolens_telemetry_bridge_init(void);
-
-#endif
+#endif // STUDIOLENS_H
