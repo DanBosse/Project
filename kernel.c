@@ -9,6 +9,9 @@
 #include <stdint.h>
 #include <stddef.h>
 #include "torus.h"
+#include "dpu.h"
+#include "vpu.h"
+#include "coprocessor.h"
 #include "phasecore.h"
 #include "simd.h"
 #include "flowscript.h"
@@ -165,6 +168,10 @@ void kernel_main(void) {
                     if (streq(cmd, "help")) {
                         serial_print("Available TorusOS Commands:\n");
                         serial_print("  help                  - Display this help menu\n");
+                        serial_print("  sandbox               - Launch Ring 3/0 secure isolation sandbox\n");
+                        serial_print("  aurapu                - Execute live AuraPU NPU tensor inference & benchmark\n");
+                        serial_print("  dpu                   - Test AuraDPU zero-copy fabric & stream offload\n");
+                        serial_print("  vpu                   - Test AuraVPU GPU coprocessor ray tracing & render offload\n");
                         serial_print("  dashboard             - Render StudioLens live telemetry dashboard\n");
                         serial_print("  status                - Show subsystem & tier metrics\n");
                         serial_print("  script                - Execute active FlowScript stream\n");
@@ -294,7 +301,17 @@ void kernel_main(void) {
                         serial_print("[PhysicsLab Test] Validating GPU-accelerated collision detection pipeline... [OK]\n");
                         serial_print("[PhysicsLab Test] All physics simulation benchmarks passed successfully.\n");
                     }
-                    else if (streq(cmd, "telemetry_dump")) {
+                    else if (streq(cmd, "vpu")) {
+                        serial_print("[TorusOS] Triggering AuraVPU GPU Coprocessor Render Acceleration...\n");
+                        vpu_accelerate_render("Realtime_Raytraced_8K_Spatial_Canvas", 7680, 4320);
+                    } else if (streq(cmd, "dpu")) {
+                        serial_print("[TorusOS] Triggering AuraDPU Fabric Offload & Stream Acceleration...\n");
+                        dpu_accelerate_stream("4K_Video_Timeline_Asset_Buffer", 1048576);
+                    } else if (streq(cmd, "aurapu")) {
+                        serial_print("[TorusOS] Triggering AuraPU NPU Universal Tensor Inference...\n");
+                        float sample_tensor[8] = { 1.0f, 2.0f, 3.0f, 4.0f, 5.0f, 6.0f, 7.0f, 8.0f };
+                        aurapu_npu_inference("TorusOS_Universal_NPU_Core", sample_tensor, 8);
+                    } else if (streq(cmd, "telemetry_dump")) {
                         serial_print("[TorusOS] Querying AuraLink telemetry buffers...\n");
                         flowscript_execute("dump_telemetry");
                     } else if (streq(cmd, "pipeline_full")) {
