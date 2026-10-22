@@ -1,3 +1,4 @@
+#include "studiolens_dashboard.h"
 #include "aura.h"
 #include "auracad.h"
 #include "video_studio.h"
@@ -164,6 +165,7 @@ void kernel_main(void) {
                     if (streq(cmd, "help")) {
                         serial_print("Available TorusOS Commands:\n");
                         serial_print("  help                  - Display this help menu\n");
+                        serial_print("  dashboard             - Render StudioLens live telemetry dashboard\n");
                         serial_print("  status                - Show subsystem & tier metrics\n");
                         serial_print("  script                - Execute active FlowScript stream\n");
                         serial_print("  aurascript [target]   - Compile AuraScript (default: kernel.as)\n");
@@ -434,6 +436,8 @@ void kernel_main(void) {
                         flowscript_execute_line("VTX_COMPILE_TENSORS");
                         studiolens_render_workspace("VTX_TENSOR_PIPELINE");
                         serial_print("[VTX -> StudioLens] Tensor convergence complete.\n");
+                    } else if (streq(cmd, "dashboard")) {
+                        studiolens_render_telemetry_dashboard();
                     } else if (streq(cmd, "clear")) {
                         serial_print("\033[2J\033[H");
                     } else if (cmd_len > 0) {
