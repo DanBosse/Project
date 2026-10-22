@@ -2,9 +2,10 @@
 #define FLOWSCRIPT_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
 void flowscript_init(void);
-int flowscript_compile_and_execute(const char *stream);
-int flowscript_execute_line(const char *line);
+bool flowscript_execute(const char *source_code);
+bool flowscript_execute_line(const char *source_code);
 
 #endif

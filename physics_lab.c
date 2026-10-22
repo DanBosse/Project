@@ -1,3 +1,4 @@
+#include "studio_core.h"
 #include "physics_lab.h"
 #include "torus.h"
 #include "limine/limine.h"
@@ -31,6 +32,9 @@ void physics_lab_set_stiffness(float k) {
 }
 
 void physics_lab_step(void) {
+    float pipe_data[2] = { spring_position, spring_velocity };
+    studio_core_write_pipe(0, pipe_data, 2, "PhysicsSpring");
+
     float displacement = spring_position - target_position;
     float force = -(stiffness * displacement) - (damping * spring_velocity);
     float acceleration = force / mass;

@@ -1,3 +1,4 @@
+#include "studio_core.h"
 #include "studiolens.h"
 #include "spatial_compositor.h"
 #include "aurascript.h"
@@ -16,6 +17,7 @@ int char_starts_with_studio(const char* str, const char* prefix) {
 }
 
 void studiolens_init(void) {
+    studio_core_init();
     serial_print("[StudioLens] Initializing Tripartite StudioLens Environment...\n");
     spatial_compositor_init();
     aurascript_init();
