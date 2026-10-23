@@ -204,6 +204,10 @@ extern void isr0x80_wrapper(void);
                     trim_arg(arg);
 
                     // Command Dispatcher
+                // Left-trim leading spaces from cmd
+                while (*cmd == ' ' || *cmd == '\t') {
+                    cmd++;
+                }
                 if (cmd_len > 0) {
                     if (!shell_dispatch_command(cmd, arg)) {
                         serial_print("Unknown command. Type 'help' for options.\n");

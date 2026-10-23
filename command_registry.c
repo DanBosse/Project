@@ -12,6 +12,10 @@
 #include "auracad.h"
 #include "aura_link.h"
 #include "aurascript.h"
+
+#include "aurascript_compiler.h"
+static void cmd_aurascript_dump(const char *arg);
+
 #include "benchmark.h"
 #include "studiolens_dashboard.h"
 #include "dpu.h"
@@ -177,6 +181,7 @@ static command_t global_commands[] = {
     { "auralink", "", "Verify backplane telemetry link", "telemetry", (cmd_handler_t)cmd_auralink, false },
     { "aurapu", "", "Query Sovereign NPU Core metrics", "coprocessor", (cmd_handler_t)cmd_aurapu, false },
     { "aurascript", "[target]", "Compile AuraScript (default: kernel.as)", "ai", (cmd_handler_t)cmd_aurascript, false },
+    { "aurascript_dump", "", "Dump full AuraScript language specification", "ai", (cmd_handler_t)cmd_aurascript_dump, false },
     { "auraspring", "", "Launch AuraSpring physics simulation workspace", "pipeline", (cmd_handler_t)cmd_auraspring, false },
     { "auratest", "", "Verify AuraLink cross-subsystem pipeline distribution", "ai", (cmd_handler_t)cmd_auratest, false },
     { "benchmark", "", "[Phase 1] Run MRAM & Twin-Prime saturation suite", "memory", (cmd_handler_t)cmd_benchmark, false },
@@ -309,8 +314,12 @@ bool shell_dispatch_command(const char *cmd, const char *arg) {
         const char *name = global_commands[i].name;
         bool match = true;
         size_t j = 0;
-        while (cmd[j] != '\0' && name[j] != '\0') {
+        while (cmd[j] != '\0' && cmd[j] != '\r' && cmd[j] != '\n' && cmd[j] != ' ' && name[j] != '\0') {
             if (cmd[j] != name[j]) { match = false; break; }
+            j++;
+        }
+        // Skip trailing whitespace/newlines in cmd
+        while (cmd[j] == '\r' || cmd[j] == '\n' || cmd[j] == ' ') {
             j++;
         }
         if (cmd[j] != '\0' || name[j] != '\0') match = false;
@@ -325,4 +334,10 @@ bool shell_dispatch_command(const char *cmd, const char *arg) {
         }
     }
     return false;
+}
+
+
+static void cmd_aurascript_dump(const char *arg) {
+    (void)arg;
+    aurascript_dump_full_source();
 }
