@@ -22,6 +22,9 @@ if [ -d "trust_core" ]; then
     done
 fi
 
+as ring3_asm.s -o ring3_asm.o
+as gpf_asm.s -o gpf_asm.o
+as gdt_asm.s -o gdt_asm.o
 gcc -ffreestanding -nostdlib -fno-pie -no-pie -m64 -mcmodel=kernel -mno-red-zone -c boot.s -o loader.o
 
 echo "[3/5] Linking 64-bit Master Image..."

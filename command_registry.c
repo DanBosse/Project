@@ -125,7 +125,8 @@ static void cmd_reboot(const char *arg) {
     (void)arg;
     serial_print("[System] Rebooting TorusOS via ACPI...\n");
 }
-static void cmd_sandbox(const char *arg) { (void)arg; sandbox_execute_safely(NULL, 0); }
+extern void ring3_jump_test(void);
+static void cmd_sandbox(const char *arg) { (void)arg; ring3_jump_test(); }
 static void cmd_scheduler(const char *arg) { 
     (void)arg;
     serial_print("[Scheduler] Active threads & timer interrupt rates normal.\n");

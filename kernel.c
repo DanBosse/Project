@@ -1,3 +1,33 @@
+#include <stdint.h>
+
+struct idt_entry {
+    uint16_t offset_low;
+    uint16_t selector;
+    uint8_t ist;
+    uint8_t flags;
+    uint16_t offset_middle;
+    uint32_t offset_high;
+    uint32_t reserved;
+} __attribute__((packed));
+
+struct idt_ptr {
+    uint16_t limit;
+    uint64_t base;
+} __attribute__((packed));
+
+static struct idt_entry idt[256];
+static struct idt_ptr idtp;
+
+void idt_set_gate(uint8_t vector, uint64_t handler, uint16_t selector, uint8_t flags) {
+    idt[vector].offset_low = (uint16_t)(handler & 0xFFFF);
+    idt[vector].selector = selector;
+    idt[vector].ist = 0;
+    idt[vector].flags = flags;
+    idt[vector].offset_middle = (uint16_t)((handler >> 16) & 0xFFFF);
+    idt[vector].offset_high = (uint32_t)(handler >> 32);
+    idt[vector].reserved = 0;
+}
+
 #include "command_registry.h"
 #include "physics_studio.h"
 #include "studiolens_dashboard.h"
@@ -113,6 +143,13 @@ void kernel_main(void) {
 
     serial_print("[BOOT] Initializing Global Descriptor Table (GDT)...\n");
     serial_print("[BOOT] Initializing Interrupt Descriptor Table (IDT)...\n");
+    extern void isr13_wrapper(void);
+extern void isr0x80_wrapper(void);
+    idtp.limit = sizeof(struct idt_entry) * 256 - 1;
+    idtp.base = (uint64_t)&idt;
+    idt_set_gate(13, (uint64_t)isr13_wrapper, 0x08, 0x8E);
+    idt_set_gate(0x80, (uint64_t)isr0x80_wrapper, 0x08, 0xEE);
+    __asm__ volatile("lidt %0" : : "m"(idtp));
     serial_print("[BOOT] Remapping PIC and configuring hardware IRQs...\n");
 
     simd_init();
