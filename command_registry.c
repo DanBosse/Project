@@ -1,3 +1,4 @@
+#include "net_stack.h"
 // ============================================================================
 // TorusOS Master Command Registry & Dispatcher (Complete 100% Codebase Coverage)
 // ============================================================================
@@ -138,6 +139,17 @@ void cmd_shutdown(const char *arg) { (void)arg; serial_print("[System] Shutting 
 // ============================================================================
 // MASTER COMMAND TABLE (FULLY INCLUSIVE)
 // ============================================================================
+
+
+void cmd_ping(const char *arg) {
+    (void)arg;
+    net_send_ping(0x0A000202); // 10.0.2.2 gateway
+}
+
+void cmd_netstat(const char *arg) {
+    (void)arg;
+    net_print_status();
+}
 
 static const command_entry_t command_table[] = {
     // --- 1. Core & Security ---

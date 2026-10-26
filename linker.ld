@@ -1,24 +1,24 @@
-OUTPUT_FORMAT(elf64-x86-64)
-ENTRY(_start)
+ENTRY(kernel_main)
+
 SECTIONS
 {
-    . = 0xffffffff80000000;
+    . = 0xFFFFFFFF80100000;
 
     .text : {
-        *(.head)
-        *(.text .text.*)
+        *(.text._start)
+        *(.text*)
     }
 
     .rodata : {
-        *(.rodata .rodata.*)
+        *(.rodata*)
     }
 
     .data : {
-        *(.data .data.*)
+        *(.data*)
     }
 
     .bss : {
+        *(.bss*)
         *(COMMON)
-        *(.bss .bss.*)
     }
 }
