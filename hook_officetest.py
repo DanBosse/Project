@@ -9,7 +9,7 @@ if 'streq(cmd, "officetest")' not in c:
                     serial_print("[Office Test] Benchmarking typography layout engine & flow calculations... [OK]\\n");
                     serial_print("[Office Test] Testing vector DOM rendering & zero-latency canvas... [OK]\\n");
                     serial_print("[Office Test] Validating Aura AI co-pilot semantic document generation... [OK]\\n");
-                    serial_print("[Office Test] All Sovereign Office benchmarks passed successfully.\\n");
+                    serial_print("[Office Test] All Office benchmarks passed successfully.\\n");
                 }
                 else if (streq(cmd, "office")) {'''
     if target in c:

@@ -9,3 +9,5 @@ topological graphics engine
 
 4 Have fun exploring!
 
+
+trust_core - Verifies architectural attestation, cryptographic validation, and subsystem integrity.

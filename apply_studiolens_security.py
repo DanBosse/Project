@@ -21,7 +21,7 @@ if 'streq(cmd, "securitytest")' not in c:
         c = c.replace(target, block, 1)
 
 # 2. Add commands to the help menu
-help_target = 'serial_print("  office                                - Launch Sovereign Office document productivity suite\\n");'
+help_target = 'serial_print("  office                                - Launch Office document productivity suite\\n");'
 help_addition = '''serial_print("  securitytest                          - Run Ring 0 trust core & security benchmark\\n");
                     serial_print("  security                              - Initialize StudioLens Secure Enclave & Isolation\\n");
                     '''

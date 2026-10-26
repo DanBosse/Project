@@ -1,3 +1,8 @@
+#include <stddef.h>
+#ifndef _SSIZE_T_DEFINED
+#define _SSIZE_T_DEFINED
+typedef long ssize_t;
+#endif
 #ifndef VFS_H
 #define VFS_H
 
@@ -19,3 +24,8 @@ bool vfs_mount(const char *path, int (*read_fn)(void*, uint32_t), int (*write_fn
 bool vfs_read_file(const char *path, void *buf, uint32_t size);
 
 #endif // VFS_H
+
+
+int vfs_open(const char *path, int flags);
+ssize_t vfs_read(int fd, void *buf, size_t count);
+int vfs_close(int fd);

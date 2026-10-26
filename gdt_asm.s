@@ -1,17 +1,22 @@
 .global gdt_flush
 .text
 gdt_flush:
-    lgdt (%rdi)
+    lgdt (%rdi)       # Load GDT pointer passed in RDI
 
-    mov $0x10, %ax
-    mov %ax, %ds
-    mov %ax, %es
-    mov %ax, %fs
-    mov %ax, %gs
-    mov %ax, %ss
+    # Load Task Register with TSS selector passed in RSI
+    movw %si, %ax
+    ltr %ax
 
-    pushq $0x08
+    movw $0x10, %ax   # Ring 0 Data Segment
+    movw %ax, %ds
+    movw %ax, %es
+    movw %ax, %fs
+    movw %ax, %gs
+    movw %ax, %ss
+
+    # Far jump to reload code segment (selector 0x08)
     lea .reload_cs(%rip), %rax
+    pushq $0x08
     pushq %rax
     lretq
 

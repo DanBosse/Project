@@ -14,24 +14,59 @@ struct gdt_ptr {
     uint64_t base;
 } __attribute__((packed));
 
-static struct gdt_entry gdt[9];
-static struct gdt_ptr gp;
+struct tss_entry {
+    uint32_t reserved0;
+    uint64_t rsp0;
+    uint64_t rsp1;
+    uint64_t rsp2;
+    uint64_t reserved1;
+    uint64_t ist1;
+    uint64_t ist2;
+    uint64_t ist3;
+    uint64_t ist4;
+    uint64_t ist5;
+    uint64_t ist6;
+    uint64_t ist7;
+    uint64_t reserved2;
+    uint16_t reserved3;
+    uint16_t iopb_offset;
+} __attribute__((packed));
 
-extern void gdt_flush(uint64_t);
+// GDT with 11 entries (0-8 normal selectors, 9-10 for 16-byte TSS descriptor)
+static uint64_t gdt[11];
+static struct gdt_ptr gp;
+static struct tss_entry kernel_tss;
+static uint8_t kstack[8192];
+
+extern void gdt_flush(uint64_t, uint16_t);
 
 static void gdt_set_gate(int num, uint32_t base, uint32_t limit, uint8_t access, uint8_t gran) {
-    gdt[num].base_low = (base & 0xFFFF);
-    gdt[num].base_middle = (base >> 16) & 0xFF;
-    gdt[num].base_high = (base >> 24) & 0xFF;
+    struct gdt_entry *item = (struct gdt_entry *)&gdt[num];
+    item->base_low = (base & 0xFFFF);
+    item->base_middle = (base >> 16) & 0xFF;
+    item->base_high = (base >> 24) & 0xFF;
+    item->limit_low = (limit & 0xFFFF);
+    item->granularity = ((limit >> 16) & 0x0F);
+    item->granularity |= (gran & 0xF0);
+    item->access = access;
+}
 
-    gdt[num].limit_low = (limit & 0xFFFF);
-    gdt[num].granularity = ((limit >> 16) & 0x0F);
-    gdt[num].granularity |= (gran & 0xF0);
-    gdt[num].access = access;
+static void gdt_set_system_gate(int num, uint64_t base, uint32_t limit, uint8_t access) {
+    struct gdt_entry *item1 = (struct gdt_entry *)&gdt[num];
+    item1->limit_low = (limit & 0xFFFF);
+    item1->base_low = (base & 0xFFFF);
+    item1->base_middle = (base >> 16) & 0xFF;
+    item1->access = access;
+    item1->granularity = ((limit >> 16) & 0x0F);
+    item1->base_high = (base >> 24) & 0xFF;
+
+    uint32_t *item2 = (uint32_t *)&gdt[num + 1];
+    *item2 = (uint32_t)(base >> 32);
+    *(item2 + 1) = 0;
 }
 
 void init_gdt(void) {
-    gp.limit = (sizeof(struct gdt_entry) * 9) - 1;
+    gp.limit = (sizeof(uint64_t) * 11) - 1;
     gp.base = (uint64_t)&gdt;
 
     // 0: Null descriptor
@@ -53,5 +88,16 @@ void init_gdt(void) {
     // 8: Ring 3 Data (DPL=3)
     gdt_set_gate(8, 0, 0xFFFFFFFF, 0xF2, 0xCF);
 
-    gdt_flush((uint64_t)&gp);
+    // Setup TSS
+    for (int i = 0; i < sizeof(struct tss_entry); i++) {
+        ((uint8_t *)&kernel_tss)[i] = 0;
+    }
+    kernel_tss.rsp0 = (uint64_t)(kstack + sizeof(kstack));
+    kernel_tss.iopb_offset = sizeof(struct tss_entry);
+
+    // 9-10: TSS Descriptor (16 bytes total starting at index 9)
+    gdt_set_system_gate(9, (uint64_t)&kernel_tss, sizeof(struct tss_entry) - 1, 0x89);
+
+    // Flush GDT and load TR (Task Register with selector 0x48 -> index 9 * 8 = 0x48)
+    gdt_flush((uint64_t)&gp, 0x48);
 }
