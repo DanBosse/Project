@@ -50,22 +50,9 @@ void kernel_print(const char *str) {
     support_print(str);
 }
 
-void ring_handshake_init(void) {
-    support_print("[RingHandshake] Initialized.\r\n");
-}
 
-void ring_handshake_send(int ring, const void *data, uint32_t size) {
-    (void)ring; (void)data; (void)size;
-}
 
-int ring_handshake_receive(int ring, void *buf, uint32_t size) {
-    (void)ring; (void)buf; (void)size;
-    return 0;
-}
 
-void kernel_perform_ring_handshake(void) {
-    support_print("[TrustCore] Ring handshake verified successfully.\r\n");
-}
 
 void studiolens_render_telemetry_dashboard(void) {
     support_print("[StudioLens] Telemetry dashboard rendering...\r\n");

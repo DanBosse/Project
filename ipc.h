@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-#define MAX_TIERS 8
+#define MAX_TIERS 16
 #define IPC_MSG_MAX_DATA 48
 
 typedef struct {

@@ -21,9 +21,10 @@ gcc -m32 -c net_stack.c -o net_stack.o -ffreestanding -O2 -Wall -Wextra
 gcc -m32 -c framebuffer.c -o framebuffer.o -ffreestanding -O2 -Wall -Wextra
 gcc -m32 -c studio_core.c -o studio_core.o -ffreestanding -O2 -Wall -Wextra
 gcc -m32 -c vfs.c -o vfs.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c ring_handshake.c -o ring_handshake.o -ffreestanding -O2 -Wall -Wextra
 
 echo "[3/5] Linking Master Image..."
-ld -m elf_i386 -T linker.ld -o torus_kernel.elf boot.o idt_s.o kernel.o idt.o keyboard.o kernel_support.o command_registry.o audio_studio.o aura.o aura_link.o auracad.o aurascript.o net_stack.o framebuffer.o studio_core.o vfs.o --gc-sections
+ld -m elf_i386 -T linker.ld -o torus_kernel.elf boot.o idt_s.o kernel.o idt.o keyboard.o kernel_support.o command_registry.o audio_studio.o aura.o aura_link.o auracad.o aurascript.o net_stack.o framebuffer.o studio_core.o vfs.o ring_handshake.o --gc-sections
 
 echo "[4/5] Setting up Bootloader & ISO Directory Structure..."
 mkdir -p iso/boot/grub
