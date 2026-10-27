@@ -13,7 +13,7 @@ extern void serial_print(const char* str);
 extern void shell_execute_command(const char* cmd);
 
 static int var_omega_mass = 10;
-static int var_omega_damping = 5;
+static int __attribute__((unused)) var_omega_damping = 5;
 static int var_viewport_scale = 100;
 static bool ipc_channel_active = true;
 

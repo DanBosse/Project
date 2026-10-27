@@ -2,19 +2,17 @@
 #define RING_HANDSHAKE_H
 
 #include <stdint.h>
-#include <stdbool.h>
-
-#define CAP_ALLOW_IPC         (1 << 0)
-#define CAP_ALLOW_TELEMETRY   (1 << 1)
-#define CAP_ALLOW_SPATIAL_UI  (1 << 2)
+#include "ipc.h"
 
 typedef struct {
-    uint32_t container_id;
-    uint64_t cryptographic_nonce;
-    bool attestation_valid;
-    uint32_t granted_capabilities;
+    uint8_t tier_id;
+    uint32_t status;
+    int attestation_valid;
 } RingHandshakeContext;
 
-RingHandshakeContext kernel_perform_ring_handshake(uint32_t container_id);
+int ring_handshake_init(uint8_t tier_id);
+int ring_handshake_send(uint8_t tier_id, const ipc_message_t *msg);
+int ring_handshake_receive(uint8_t tier_id, ipc_message_t *msg);
+RingHandshakeContext kernel_perform_ring_handshake(uint8_t tier_id);
 
 #endif

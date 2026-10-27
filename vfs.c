@@ -1,27 +1,28 @@
-#include "torus.h"
+#include <stdint.h>
+#include <stdbool.h>
 #include "vfs.h"
 
-static vfs_node_t mount_table[MAX_MOUNT_POINTS];
-
-void vfs_init(void) {
-    serial_print("[VFS] Initializing Virtual Filesystem & Namespace Mount Subsystem...\n");
-    for (int i = 0; i < MAX_MOUNT_POINTS; i++) {
-        mount_table[i].active = false;
-    }
-    serial_print("[VFS] Virtual Filesystem active. CAD asset namespace ready.\n");
-}
-
 bool vfs_mount(const char *path, int (*read_fn)(void*, uint32_t), int (*write_fn)(const void*, uint32_t)) {
-    for (int i = 0; i < MAX_MOUNT_POINTS; i++) {
-        if (!mount_table[i].active) {
-            mount_table[i].active = true;
-            return true;
-        }
-    }
-    return false;
+    (void)path; (void)read_fn; (void)write_fn;
+    return true;
 }
 
 bool vfs_read_file(const char *path, void *buf, uint32_t size) {
-    // Stub file lookup and read
-    return true;
+    (void)path; (void)buf; (void)size;
+    return false;
+}
+
+int vfs_open(const char *path, int flags) {
+    (void)path; (void)flags;
+    return 1; // Dummy FD
+}
+
+ssize_t vfs_read(int fd, void *buf, size_t count) {
+    (void)fd; (void)buf; (void)count;
+    return 0; // EOF
+}
+
+int vfs_close(int fd) {
+    (void)fd;
+    return 0;
 }

@@ -2,46 +2,42 @@
 set -e
 
 echo "[1/5] Cleaning stale object artifacts..."
-rm -f *.o trust_core/*.o
+rm -f *.o *.elf *.iso
 
-echo "[2/5] Compiling TorusOS subsystems, trust core, and boot.s in 64-bit mode..."
-mkdir -p iso_root/boot/limine
+echo "[2/5] Assembling Bootstrap & Compiling Subsystems..."
+gcc -m32 -c boot.s -o boot.o
+gcc -m32 -c idt_s.s -o idt_s.o
+gcc -m32 -c kernel.c -o kernel.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c idt.c -o idt.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c keyboard.c -o keyboard.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c kernel_support.c -o kernel_support.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c command_registry.c -o command_registry.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c audio_studio.c -o audio_studio.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c aura.c -o aura.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c aura_link.c -o aura_link.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c auracad.c -o auracad.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c aurascript.c -o aurascript.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c net_stack.c -o net_stack.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c framebuffer.c -o framebuffer.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c studio_core.c -o studio_core.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c vfs.c -o vfs.o -ffreestanding -O2 -Wall -Wextra
 
-for c in *.c; do
-    if [ "$c" = "mem.c" ] || [ "$c" = "aurascript_promotion.c" ]; then
-        continue
-    fi
-    echo "  -> Compiling $c"
-    gcc -ffreestanding -nostdlib -fno-pie -no-pie -m64 -mcmodel=kernel -mno-red-zone -O2 -c "$c"
-done
+echo "[3/5] Linking Master Image..."
+ld -m elf_i386 -T linker.ld -o torus_kernel.elf boot.o idt_s.o kernel.o idt.o keyboard.o kernel_support.o command_registry.o audio_studio.o aura.o aura_link.o auracad.o aurascript.o net_stack.o framebuffer.o studio_core.o vfs.o --gc-sections
 
-if [ -d "trust_core" ]; then
-    for c in trust_core/*.c; do
-        if [ -f "$c" ]; then
-            echo "  -> Compiling trust core: $c"
-            gcc -ffreestanding -nostdlib -fno-pie -no-pie -m64 -mcmodel=kernel -mno-red-zone -O2 -c "$c" -o "$(basename ${c%.c}).o"
-        fi
-    done
-fi
+echo "[4/5] Setting up Bootloader & ISO Directory Structure..."
+mkdir -p iso/boot/grub
+cp torus_kernel.elf iso/boot/torus_kernel.elf
+cat << 'GRUBEOF' > iso/boot/grub/grub.cfg
+menuentry "TorusOS" {
+    multiboot /boot/torus_kernel.elf
+}
+GRUBEOF
 
-as ring3_asm.s -o ring3_asm.o
-as gpf_asm.s -o gpf_asm.o
-as gdt_asm.s -o gdt_asm.o
-gcc -ffreestanding -nostdlib -fno-pie -no-pie -m64 -mcmodel=kernel -mno-red-zone -c boot.s -o loader.o
+echo "[5/5] Packaging ISO with GRUB..."
+grub-mkrescue -o torus-aura-master.iso iso
 
-echo "[3/5] Linking 64-bit Master Image..."
-OBJS=$(find . -maxdepth 1 -name "*.o" ! -name "plugin.o" ! -name "plugin_bin.o")
-ld -m elf_x86_64 -T linker.ld $OBJS -o iso_root/boot/torus-aura-kernel.elf
-
-echo "[4/5] Copying Limine boot files and packaging ISO..."
-if [ -d "limine" ]; then
-    cp limine/limine-bios-cd.bin limine/limine-uefi-cd.bin limine/limine-bios.sys iso_root/boot/limine/ 2>/dev/null || true
-fi
-if [ -f "limine.conf" ]; then
-    cp limine.conf iso_root/
-    cp limine.conf iso_root/boot/limine/
-fi
-
-xorriso -as mkisofs -b boot/limine/limine-bios-cd.bin -no-emul-boot -boot-load-size 4 -boot-info-table --efi-boot boot/limine/limine-uefi-cd.bin -efi-boot-part --efi-boot-image --protective-msdos-label iso_root -o torus-aura-master.iso 2>/dev/null
-
-echo "[5/5] Build complete. ISO packaged successfully."
+echo ""
+echo "[=========================================================]"
+echo "        TorusOS Master ISO & Kernel Built Successfully!    "
+echo "[=========================================================]"

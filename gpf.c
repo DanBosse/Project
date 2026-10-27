@@ -1,3 +1,4 @@
+#include "kernel.h"
 #include <stdint.h>
 
 struct interrupt_frame {
