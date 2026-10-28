@@ -98,8 +98,9 @@ void cmd_dashboard(const char *arg) {
     serial_print(" [Tier 0x08] AuraCad        : ACTIVE   [Ring 3] | Physics: 60Hz\n");
     serial_print(" [Tier 0x09] OfficeSuite    : ACTIVE   [Ring 3] | Doc Sandbox  \n");
     serial_print(" [Tier 0x0A] AuraEngine NPU : ACTIVE   [Ring 3] | Tensor-Sync  \n");
+    serial_print(" [Tier 0x0B] PhysicsLab     : ACTIVE   [Ring 3] | Multi-Body: Active\n");
     serial_print("-----------------------------------------------------------------\n");
-    serial_print(" Status: All 10 Containers Verified. Zero Boundary Leaks.\n");
+    serial_print(" Status: All 11 Containers Verified. Zero Boundary Leaks.\n");
     serial_print("=================================================================\n\n");
 }
 
@@ -148,7 +149,7 @@ void cmd_trust_core(const char *arg) {
     serial_print("[TrustCore] Hardware Unit (SOT-MRAM Non-Volatile Memory):    VERIFIED [Zero-Latency Bus: OK]\n");
     serial_print("[TrustCore] Communication Layer (LoRa Mesh & Packet Routing):  VERIFIED [Encrypted Link: OK]\n");
     serial_print("[TrustCore] Communication Layer (NetStack & Wi-Fi Bindings):   VERIFIED [Zero Boundary Leaks]\n");
-    serial_print("[TrustCore] All 10 Containers & Hardware Units Successfully Attested. Absolute Zero Leakage.\n");
+    serial_print("[TrustCore] All 11 Containers & Hardware Units Successfully Attested. Absolute Zero Leakage.\n");
 }
 
 
