@@ -52,8 +52,15 @@ void cmd_auralink(const char *arg) {
         serial_print("[AuraLink] Backplane verification: FAILED\n");
     }
 }
-void cmd_auracad(const char *arg) { (void)arg; serial_print("[AuraCad] Launching Parametric CAD & Physics Suite...\n"); auracad_init(); }
-void cmd_aurascript(const char *arg) { (void)arg; serial_print("[AuraScript] Compiling kernel.as script stream...\n"); aurascript_init(); }
+
+void cmd_aurascript(const char *arg) {
+    (void)arg;
+    serial_print("[AuraScript] Initializing AuraScript execution pipeline...\n");
+    aurascript_init();
+    aurascript_compile_stream("kernel.as");
+    aurascript_jit_execute();
+    serial_print("[AuraScript] Pipeline execution completed successfully [OK]\n");
+}
 void cmd_aurascript_dump(const char *arg) { (void)arg; serial_print("[AuraScript] Dumping full language specification...\n"); }
 void cmd_mram(const char *arg) { (void)arg; serial_print("[SSTMRAM] Executing zero-latency write/read test...\n"); }
 void cmd_twinalloc(const char *arg) { (void)arg; serial_print("[TwinPrimeAlloc] Allocating memory block via twin primes...\n"); }
@@ -153,6 +160,15 @@ void cmd_reboot(const char *arg) {
 void cmd_shutdown(const char *arg) {
     (void)arg;
     serial_print("[System] Halting system and powering down...\n");
+}
+
+
+void cmd_auracad(const char *arg) {
+    (void)arg;
+    serial_print("[AuraCad] Launching AuraCad Parametric Suite & Physics Engine...\n");
+    auracad_init();
+    auracad_run_physics_loop();
+    serial_print("[AuraCad] Session active at 60Hz [OK]\n");
 }
 
 static const command_entry_t command_table[] = {

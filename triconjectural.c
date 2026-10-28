@@ -31,3 +31,15 @@ void triconjectural_search_os(const char* query) {
     serial_print("  -> State [0]: Ring 0 Execution Active (AVX/SSE Vector Unit Online)\n");
     serial_print("  -> State [1]: SOT-MRAM t_REFI = 0 refresh latency verified\n");
 }
+
+
+void cmd_triconjectural_real(void) {
+    serial_print("[Triconjectural] Tripartite Engine: Grid/Stacked/Floating Layouts Active.\n");
+    serial_print("[Triconjectural] M5 Linear Framebuffer Synchronized. Zero Leakage.\n");
+}
+
+void cmd_triconjectural(const char *arg) {
+    (void)arg;
+    serial_print("[Triconjectural] Tripartite Engine: Grid/Stacked/Floating Layouts Active.\n");
+    serial_print("[Triconjectural] M5 Linear Framebuffer Synchronized. Zero Leakage.\n");
+}

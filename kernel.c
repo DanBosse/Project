@@ -1,3 +1,4 @@
+extern void phasecore_init(void);
 #include <stdint.h>
 #include "kernel.h"
 #include "ipc.h"
@@ -21,6 +22,7 @@ void kernel_init(void) {
     serial_init();     
     init_idt();        
     ipc_init();
+    phasecore_init();
 }
 
 void kernel_main(void) {

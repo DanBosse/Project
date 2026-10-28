@@ -2,19 +2,12 @@
 #define GRAPHICS_H
 
 #include <stdint.h>
+#include <stdbool.h>
 
-typedef struct {
-    uint32_t* base_address;
-    uint64_t width;
-    uint64_t height;
-    uint64_t pitch;
-    uint16_t bpp;
-} Framebuffer;
-
-void graphics_init(void* limine_fb_request_response);
-void put_pixel(int x, int y, uint32_t color);
-void draw_rect(int x, int y, int w, int h, uint32_t color);
-void clear_screen(uint32_t color);
-void render_high_end_shader(int start_x, int start_y, int width, int height);
+void graphics_init(uint32_t *fb_addr, uint32_t width, uint32_t height, uint32_t pitch);
+void graphics_clear(uint32_t color);
+void graphics_draw_pixel(uint32_t x, uint32_t y, uint32_t color);
+void graphics_draw_rect(uint32_t x, uint32_t y, uint32_t width, uint32_t height, uint32_t color);
+void graphics_render_test_pattern(void);
 
 #endif

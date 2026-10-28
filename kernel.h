@@ -31,3 +31,5 @@ struct multiboot_info {
     uint8_t  framebuffer_type;
     uint8_t  color_info[5];
 };
+
+void serial_print(const char *str);
