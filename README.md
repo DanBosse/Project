@@ -11,3 +11,9 @@ topological graphics engine
 
 
 trust_core - Verifies architectural attestation, cryptographic validation, and subsystem integrity.
+
+
+<!--START_SECTION:milestones-->
+### Core Platform Readiness
+`[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░]` **0%** (0/0 Milestones Complete)
+<!--END_SECTION:milestones-->
