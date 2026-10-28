@@ -1,4 +1,34 @@
 #include "command_registry.h"
+
+extern void cmd_jit_compile(const char *arg);
+extern void cmd_pipeline(const char *arg);
+extern void cmd_firewall(const char *arg);
+extern void cmd_ring_guard(const char *arg);
+extern void cmd_audit_trail(const char *arg);
+
+extern void cmd_selftest(const char *arg);
+
+extern void cmd_office(const char *arg);
+extern void cmd_officecomms(const char *arg);
+extern void cmd_officetelemetry(const char *arg);
+
+
+
+extern void cmd_security(const char *arg);
+extern void cmd_manifold(const char *arg);
+extern void cmd_auraspring(const char *arg);
+extern void cmd_server_status(const char *arg);
+extern void cmd_net_status(const char *arg);
+extern void cmd_wireless_scan(const char *arg);
+extern void cmd_aurascript(const char *arg);
+
+
+extern void cmd_coproc(const char *arg);
+extern void cmd_heapdump(const char *arg);
+extern void cmd_pulse_manifold(const char *arg);
+extern void cmd_metrics(const char *arg);
+extern void cmd_status(const char *arg);
+
 #include "kernel.h"
 #include "ring_handshake.h"
 #include "triconjectural.h"
@@ -53,21 +83,14 @@ void cmd_auralink(const char *arg) {
     }
 }
 
-void cmd_aurascript(const char *arg) {
-    (void)arg;
-    serial_print("[AuraScript] Initializing AuraScript execution pipeline...\n");
-    aurascript_init();
-    aurascript_compile_stream("kernel.as");
-    aurascript_jit_execute();
-    serial_print("[AuraScript] Pipeline execution completed successfully [OK]\n");
-}
+
 void cmd_aurascript_dump(const char *arg) { (void)arg; serial_print("[AuraScript] Dumping full language specification...\n"); }
 void cmd_mram(const char *arg) { (void)arg; serial_print("[SSTMRAM] Executing zero-latency write/read test...\n"); }
 void cmd_twinalloc(const char *arg) { (void)arg; serial_print("[TwinPrimeAlloc] Allocating memory block via twin primes...\n"); }
 void cmd_dpu(const char *arg) { (void)arg; serial_print("[DPU] Querying Data Processing Unit metrics...\n"); }
 void cmd_vpu(const char *arg) { (void)arg; serial_print("[VPU] Querying Vision Processing Unit metrics...\n"); }
 void cmd_sandbox(const char *arg) { (void)arg; serial_print("[Sandbox] Enforcing Ring 3/0 secure isolation boundaries...\n"); }
-void cmd_firewall(const char *arg) { (void)arg; serial_print("[Firewall] Inspecting active rule sets and drop states...\n"); }
+
 
 void cmd_studiolens_real(const char *arg) {
     (void)arg;
@@ -112,7 +135,7 @@ void cmd_generic_stub(const char *arg) {
 
 void cmd_trust_core(const char *arg) {
     (void)arg;
-    serial_print("[TrustCore] Running full-spectrum sovereign hardware & container attestation...\n");
+ serial_print("[TrustCore] Running full-spectrum hardware & container attestation...\n");
     RingHandshakeContext ctx1 = kernel_perform_ring_handshake(0x01);
     serial_print("[TrustCore] Container 0x01 (UserTerminal):    ");
     if (ctx1.attestation_valid) serial_print("VERIFIED [Sandbox: Strict, IPC: Active]\n"); else serial_print("FAILED\n");
@@ -176,11 +199,11 @@ static const command_entry_t command_table[] = {
     { "Core & Security",      "trust_core",       "Verify architectural attestation & ring security",     cmd_trust_core },
     { "Core & Security",      "selftest",         "Verify all command registry handlers & safety",        cmd_selftest },
     { "Core & Security",      "sandbox",          "Launch Ring 3/0 secure isolation sandbox",             cmd_sandbox },
-    { "Core & Security",      "security",         "Check attestation profiles & vulnerability logs",      cmd_generic_stub },
-    { "Core & Security",      "ring_guard",       "Enforce strict Ring 0 / Ring 3 memory boundaries",     cmd_generic_stub },
+    { "Core & Security",      "security",         "Check attestation profiles & vulnerability logs",      cmd_security },
+    { "Core & Security",      "ring_guard",       "Enforce strict Ring 0 / Ring 3 memory boundaries",     cmd_ring_guard },
     { "Core & Security",      "attest_root",      "Generate cryptographic root of trust certificate",     cmd_generic_stub },
     { "Core & Security",      "crypto_engine",    "Initialize hardware-accelerated crypto coprocessor",   cmd_generic_stub },
-    { "Core & Security",      "audit_trail",      "Dump kernel security audit and violation logs",        cmd_generic_stub },
+    { "Core & Security",      "audit_trail",      "Dump kernel security audit and violation logs",        cmd_audit_trail },
     { "Core & Security",      "kernel_lock",      "Lock critical kernel pages against alteration",        cmd_generic_stub },
     { "Core & Security",      "sandbox_policy",   "Configure strict IPC and capability sandboxes",        cmd_generic_stub },
 
@@ -193,51 +216,51 @@ static const command_entry_t command_table[] = {
     { "StudioLens & Suites",  "graphicsstudio",   "Launch StudioLens Graphics & Design Canvas",           cmd_generic_stub },
     { "StudioLens & Suites",  "graphics_test",    "Render M5 linear framebuffer test pattern",            cmd_graphics_test },
     { "StudioLens & Suites",  "videostudio",      "Launch StudioLens Video NLE Suite",                    cmd_generic_stub },
-    { "StudioLens & Suites",  "office",           "Launch Office document productivity suite",            cmd_generic_stub },
-    { "StudioLens & Suites",  "officecomms",      "Toggle Secure Office Comms & Interconnectivity",       cmd_generic_stub },
-    { "StudioLens & Suites",  "officetelemetry",  "Bridge live telemetry into Office",                    cmd_generic_stub },
+    { "StudioLens & Suites",  "office",           "Launch Office document productivity suite",            cmd_office },
+    { "StudioLens & Suites",  "officecomms",      "Toggle Secure Office Comms & Interconnectivity",       cmd_officecomms },
+    { "StudioLens & Suites",  "officetelemetry",  "Bridge live telemetry into Office",                    cmd_officetelemetry },
 
     { "Aura AI & Pipeline",   "aura",             "Launch Aura OS Artificial Intelligence Core",          cmd_aura },
     { "Aura AI & Pipeline",   "auralink",         "Verify backplane telemetry link",                      cmd_auralink },
     { "Aura AI & Pipeline",   "aurascript",       "Compile AuraScript (default: kernel.as)",              cmd_aurascript },
     { "Aura AI & Pipeline",   "aurascript_dump",  "Dump full AuraScript language specification",          cmd_aurascript_dump },
     { "Aura AI & Pipeline",   "auratest",         "Verify AuraLink cross-subsystem distribution",         cmd_generic_stub },
-    { "Aura AI & Pipeline",   "pipeline",         "Run full FlowScript optimization pipeline",            cmd_generic_stub },
-    { "Aura AI & Pipeline",   "pipeline_full",    "Run multi-step cross-subsystem pipeline",              cmd_generic_stub },
-    { "Aura AI & Pipeline",   "run_full_pipeline","Execute full FlowScript optimization pipeline",        cmd_generic_stub },
-    { "Aura AI & Pipeline",   "script",           "Execute active FlowScript stream",                     cmd_generic_stub },
+    { "Aura AI & Pipeline",   "pipeline",         "Run full FlowScript optimization pipeline",            cmd_pipeline },
+    { "Aura AI & Pipeline",   "pipeline_full",    "Run multi-step cross-subsystem pipeline",              cmd_pipeline },
+    { "Aura AI & Pipeline",   "run_full_pipeline","Execute full FlowScript optimization pipeline",        cmd_pipeline },
+    { "Aura AI & Pipeline",   "script",           "Execute active FlowScript stream",                     cmd_pipeline },
     { "Aura AI & Pipeline",   "telemetry_dump",   "Inspect Ring 0 zero-copy telemetry channels",          cmd_generic_stub },
-    { "Aura AI & Pipeline",   "jit_compile",      "Execute AuraScript JIT native machine code pass",      cmd_generic_stub },
+    { "Aura AI & Pipeline",   "jit_compile",      "Execute AuraScript JIT native machine code pass",      cmd_jit_compile },
     { "Aura AI & Pipeline",   "neural_upscale",   "Run NPU neural frame upscaling filter",                cmd_generic_stub },
 
     { "Physics, Math & CAD",  "auracad",          "Launch AuraCad Parametric CAD & Physics Suite",        cmd_auracad },
     { "Physics, Math & CAD",  "cad",              "Launch AuraCad Parametric CAD & Physics Suite",        cmd_auracad },
-    { "Physics, Math & CAD",  "auraspring",       "Launch AuraSpring physics simulation workspace",       cmd_generic_stub },
-    { "Physics, Math & CAD",  "physics",          "Alias for physicslab workspace suite",                 cmd_generic_stub },
-    { "Physics, Math & CAD",  "physicslab",       "Launch AuraSpring physics simulation workspace",       cmd_generic_stub },
+    { "Physics, Math & CAD",  "auraspring",       "Launch AuraSpring physics simulation workspace",       cmd_auraspring },
+    { "Physics, Math & CAD",  "physics",          "Alias for physicslab workspace suite",                 cmd_auraspring },
+    { "Physics, Math & CAD",  "physicslab",       "Launch AuraSpring physics simulation workspace",       cmd_auraspring },
     { "Physics, Math & CAD",  "physicstest",      "Run AuraSpring physics simulation benchmark",          cmd_generic_stub },
-    { "Physics, Math & CAD",  "manifold",         "Evaluate manifold variable at integer x",              cmd_generic_stub },
+    { "Physics, Math & CAD",  "manifold",         "Evaluate manifold variable at integer x",              cmd_manifold },
     { "Physics, Math & CAD",  "mathhook",         "Inspect initialized algebraic evaluation layers",      cmd_generic_stub },
-    { "Physics, Math & CAD",  "pulse_manifold",   "Pulse Frequency Manifold synchronization wave",        cmd_generic_stub },
+    { "Physics, Math & CAD",  "pulse_manifold",   "Pulse Frequency Manifold synchronization wave",        cmd_pulse_manifold },
     { "Physics, Math & CAD",  "tensor_core",      "Evaluate tensor pullback across manifold geometry",    cmd_generic_stub },
 
-    { "Hardware & Memory",    "coproc",           "Query real-time hardware status metrics",              cmd_generic_stub },
-    { "Hardware & Memory",    "dpu",              "Query Data Processing Unit metrics",                   cmd_dpu },
-    { "Hardware & Memory",    "vpu",              "Query Vision Processing Unit metrics",                 cmd_vpu },
-    { "Hardware & Memory",    "aurapu",           "Query NPU Core metrics",                               cmd_generic_stub },
+    { "Hardware & Memory",    "coproc",           "Query real-time hardware status metrics",              cmd_coproc },
+    { "Hardware & Memory",    "dpu",              "Query Data Processing Unit metrics",                   cmd_coproc },
+    { "Hardware & Memory",    "vpu",              "Query Vision Processing Unit metrics",                 cmd_coproc },
+    { "Hardware & Memory",    "aurapu",           "Query NPU Core metrics",                               cmd_coproc },
     { "Hardware & Memory",    "mram",             "Test SOT-MRAM zero-latency write/read",                cmd_mram },
     { "Hardware & Memory",    "twinalloc",        "Allocate memory block via twin primes",                cmd_twinalloc },
-    { "Hardware & Memory",    "heapdump",         "Inspect kernel heap allocation blocks",                cmd_generic_stub },
+    { "Hardware & Memory",    "heapdump",         "Inspect kernel heap allocation blocks",                cmd_heapdump },
     { "Hardware & Memory",    "dashboard",        "Render StudioLens live telemetry dashboard",           cmd_dashboard },
-    { "Hardware & Memory",    "metrics",          "Display real-time CPU, MRAM, and NPU counters",        cmd_generic_stub },
-    { "Hardware & Memory",    "status",           "Show subsystem & tier metrics",                        cmd_generic_stub },
+    { "Hardware & Memory",    "metrics",          "Display real-time CPU, MRAM, and NPU counters",        cmd_metrics },
+    { "Hardware & Memory",    "status",           "Show subsystem & tier metrics",                        cmd_status },
     { "Hardware & Memory",    "subsystems",       "Query real-time modular convergence links",            cmd_generic_stub },
     { "Hardware & Memory",    "firewall",         "Query real-time rule sets and drop states",            cmd_firewall },
 
-    { "Network & Wireless",   "net_status",       "Display active network interfaces and IP bindings",    cmd_generic_stub },
+    { "Network & Wireless",   "net_status",       "Display active network interfaces and IP bindings",    cmd_net_status },
     { "Network & Wireless",   "lora_mesh",        "Monitor LoRa mesh packet routing state",               cmd_generic_stub },
-    { "Network & Wireless",   "wireless_scan",    "Scan for nearby Wi-Fi / radio access points",          cmd_generic_stub },
-    { "Network & Wireless",   "server_status",    "Monitor active background network daemons",            cmd_generic_stub },
+    { "Network & Wireless",   "wireless_scan",    "Scan for nearby Wi-Fi / radio access points",          cmd_wireless_scan },
+    { "Network & Wireless",   "server_status",    "Monitor active background network daemons",            cmd_server_status },
 
     { "System Utilities",     "help",             "Display this help menu",                               cmd_help },
     { "System Utilities",     "clear",            "Clear terminal output",                                cmd_generic_stub },
@@ -273,11 +296,7 @@ void cmd_help(const char *arg) {
     }
 }
 
-void cmd_selftest(const char *arg) {
-    (void)arg;
-    serial_print("[Selftest] Verifying command registry handlers... [OK]\n");
-    serial_print("[Selftest] Verifying Ring 0/Ring 3 IPC gates... [OK]\n");
-}
+
 
 bool shell_dispatch_command(const char *cmd, const char *arg) {
     if (!cmd || *cmd == '\0')
