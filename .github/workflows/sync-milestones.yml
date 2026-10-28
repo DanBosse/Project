@@ -26,34 +26,22 @@ jobs:
         run: |
           python3 -c '
           import re
-
           with open("docs/milestones.md", "r") as f:
-              milestones_content = f.read()
-
-          total = len(re.findall(r"\| M\d+\s+\|", milestones_content))
-          completed = len(re.findall(r"\| COMPLETE\s+\|", milestones_content))
+              content = f.read()
+          total = len(re.findall(r"\| M\d+\s+\|", content))
+          completed = len(re.findall(r"\| COMPLETE\s+\|", content))
+          pct = int((completed / total) * 100) if total > 0 else 0
+          bar = "[" + "█" * int(pct / 2) + "░" * (50 - int(pct / 2)) + "]"
+          snippet = f"### Core Platform Readiness\n`{bar}` **{pct}%** ({completed}/{total} Milestones Complete)"
           
-          percentage = int((completed / total) * 100) if total > 0 else 0
-
-          filled = int(percentage / 2)
-          empty = 50 - filled
-          bar = "[" + "█" * filled + "░" * empty + "]"
-          progress_snippet = f"### Core Platform Readiness\n`{bar}` **{percentage}%** ({completed}/{total} Milestones Complete)"
-
           with open("README.md", "r") as f:
               readme = f.read()
-
           pattern = r"(<!--START_SECTION:milestones-->)(.*?)(<!--END_SECTION:milestones-->)"
-          replacement = f"\\1\n{progress_snippet}\n\\3"
-
-          if re.search(pattern, readme, re.DOTALL):
-              updated_readme = re.sub(pattern, replacement, readme, flags=re.DOTALL)
-          else:
-              updated_readme = readme + f"\n\n<!--START_SECTION:milestones-->\n{progress_snippet}\n<!--END_SECTION:milestones-->\n"
-
+          replacement = f"\\1\n{snippet}\n\\3"
+          updated = re.sub(pattern, replacement, readme, flags=re.DOTALL) if re.search(pattern, readme, re.DOTALL) else readme + f"\n\n<!--START_SECTION:milestones-->\n{snippet}\n<!--END_SECTION:milestones-->\n"
           with open("README.md", "w") as f:
-              f.write(updated_readme)
-          print("README successfully synchronized with docs/milestones.md")
+              f.write(updated)
+          print("Updated README successfully!")
           '
 
       - name: Commit and Push Changes
