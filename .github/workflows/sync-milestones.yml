@@ -1,4 +1,4 @@
- name: Sync Milestones to README
+name: Sync Milestones to README
 
 on:
   push:
