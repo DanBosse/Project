@@ -10,6 +10,8 @@ void studio_core_init(void) {
 }
 
 size_t studio_core_read_pipe(void *buf, size_t len) {
+    (void)buf;
+    (void)len;
     // Stub pipe reader for audio/aura subsystems
     return 0;
 }

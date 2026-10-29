@@ -89,7 +89,7 @@ void init_gdt(void) {
     gdt_set_gate(8, 0, 0xFFFFFFFF, 0xF2, 0xCF);
 
     // Setup TSS
-    for (int i = 0; i < sizeof(struct tss_entry); i++) {
+    for (unsigned int i = 0; i < sizeof(struct tss_entry); i++) {
         ((uint8_t *)&kernel_tss)[i] = 0;
     }
     kernel_tss.rsp0 = (uint32_t)(kstack + sizeof(kstack));

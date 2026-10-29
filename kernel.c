@@ -13,6 +13,7 @@ void spatial_compositor_init(uint32_t *fb, uint32_t width, uint32_t height, uint
 void spatial_compositor_render_frame(void);
 
 void kernel_main(uint32_t magic, struct multiboot_info* mb_info) {
+    (void)magic;
     vga_init();
     serial_init();
     vga_print("[TORUSOS] Initializing Spatial Compositor Architecture...\n");
