@@ -67,7 +67,7 @@ static void gdt_set_system_gate(int num, uint64_t base, uint32_t limit, uint8_t 
 
 void init_gdt(void) {
     gp.limit = (sizeof(uint64_t) * 11) - 1;
-    gp.base = (uint64_t)&gdt;
+    gp.base = (uint32_t)&gdt;
 
     // 0: Null descriptor
     gdt_set_gate(0, 0, 0, 0, 0);
@@ -92,12 +92,12 @@ void init_gdt(void) {
     for (int i = 0; i < sizeof(struct tss_entry); i++) {
         ((uint8_t *)&kernel_tss)[i] = 0;
     }
-    kernel_tss.rsp0 = (uint64_t)(kstack + sizeof(kstack));
+    kernel_tss.rsp0 = (uint32_t)(kstack + sizeof(kstack));
     kernel_tss.iopb_offset = sizeof(struct tss_entry);
 
     // 9-10: TSS Descriptor (16 bytes total starting at index 9)
-    gdt_set_system_gate(9, (uint64_t)&kernel_tss, sizeof(struct tss_entry) - 1, 0x89);
+    gdt_set_system_gate(9, (uint32_t)&kernel_tss, sizeof(struct tss_entry) - 1, 0x89);
 
     // Flush GDT and load TR (Task Register with selector 0x48 -> index 9 * 8 = 0x48)
-    gdt_flush((uint64_t)&gp, 0x48);
+    gdt_flush((uint32_t)&gp, 0x48);
 }

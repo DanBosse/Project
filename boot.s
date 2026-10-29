@@ -1,16 +1,28 @@
 .code32
 .set ALIGN,    1<<0             # align loaded modules on page boundaries
 .set MEMINFO,  1<<1             # provide memory map
-.set FLAGS,    ALIGN | MEMINFO  # this is the Multiboot 'flag' field
-.set MAGIC,    0x1BADB002       # 'magic number' lets bootloader find the header
-.set CHECKSUM, -(MAGIC + FLAGS) # checksum of above, to prove we are multiboot
+.set GRAPHICS, 1<<2             # request graphics mode
+.set FLAGS,    ALIGN | MEMINFO | GRAPHICS
+.set MAGIC,    0x1BADB002       # multiboot magic number
+.set CHECKSUM, -(MAGIC + FLAGS) # checksum
 
-# Declare the multiboot header so QEMU / GRUB recognizes the kernel
+# Declare the multiboot header with graphics request
 .section .multiboot
 .align 4
 .long MAGIC
 .long FLAGS
 .long CHECKSUM
+# Additional header fields required when GRAPHICS flag is set:
+.long 0        # header_addr
+.long 0        # load_addr
+.long 0        # load_end_addr
+.long 0        # bss_end_addr
+.long 0        # entry_addr
+# Graphics preference:
+.long 0        # mode_type (0 = linear graphics buffer)
+.long 1024     # width
+.long 768      # height
+.long 32       # depth (bits per pixel)
 
 .global _start
 .extern kernel_main
@@ -24,7 +36,9 @@ _start:
     push %eax
     popf
 
-    # 3. Jump into your C kernel entry point
+    # 3. Pass Multiboot arguments to kernel_main(uint32_t magic, struct multiboot_info* mb_info)
+    push %ebx
+    push %eax
     call kernel_main
 
     # 4. Hang if kernel_main returns

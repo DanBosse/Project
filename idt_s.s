@@ -21,3 +21,25 @@ keyboard_handler_stub:
 
     popa
     iret
+
+.global gdt_flush
+
+.global gdt_flush
+
+.global gdt_flush
+
+.global gdt_flush
+gdt_flush:
+    movl 4(%esp), %eax
+    lgdt (%eax)
+    movw 8(%esp), %ax
+    movw %ax, %ds
+    movw %ax, %es
+    movw %ax, %fs
+    movw %ax, %gs
+    movw %ax, %ss
+    
+    popl %ecx
+    pushl $0x08
+    pushl %ecx
+    lret

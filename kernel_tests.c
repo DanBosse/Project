@@ -1,6 +1,10 @@
 #include <stdint.h>
 #include <stddef.h>
 
+extern void spatial_compositor_init(uint32_t *fb, uint32_t width, uint32_t height, uint32_t pitch);
+extern void spatial_compositor_render_frame(void);
+
+
 // Subsystem API declarations for testing
 int boot_attestation_extend_pcr(uint32_t pcr_index, const uint8_t *data, size_t size);
 int hsm_vault_generate_key(int type, uint32_t usage, uint32_t *out_id);

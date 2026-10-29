@@ -57,3 +57,12 @@ void kernel_print(const char *str) {
 void studiolens_render_telemetry_dashboard(void) {
     support_print("[StudioLens] Telemetry dashboard rendering...\r\n");
 }
+
+int serial_received(void) {
+    return inb(SERIAL_PORT + 5) & 1;
+}
+
+char serial_read(void) {
+    while (serial_received() == 0);
+    return inb(SERIAL_PORT);
+}

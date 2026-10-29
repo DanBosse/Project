@@ -1,3 +1,4 @@
+#include "serial.h"
 #include <stdint.h>
 #include <stdbool.h>
 
@@ -13,7 +14,7 @@ static inline uint8_t inb(uint16_t port) {
     return ret;
 }
 
-void serial_init(void) {
+void _unused_serial_init(void) {
     outb(PORT + 1, 0x00);    
     outb(PORT + 3, 0x80);    
     outb(PORT + 0, 0x03);    

@@ -4,7 +4,7 @@
 
 extern void kernel_print(const char* str);
 
-void kernel_print_hex(uint64_t val) {
+static __attribute__((unused)) void kernel_print_hex_internal(uint64_t val) {
     char buf[19];
     buf[18] = '\0';
     int i = 17;
@@ -18,7 +18,7 @@ void kernel_print_hex(uint64_t val) {
     kernel_print(&buf[i + 1]);
 }
 
-void phasecore_init(void) {
+static __attribute__((unused)) void phasecore_init_internal(void) {
     kernel_print("[PhaseCore] Initialized deterministic execution engine & opcode dispatch.\n");
 }
 
@@ -27,7 +27,7 @@ void phasecore_dispatch(PhaseCoreOpcode op, uint64_t arg1, uint64_t arg2) {
     (void)arg2;
 
     kernel_print("[PhaseCore] [TRACE] Opcode: ");
-    kernel_print_hex((uint64_t)op);
+    /* kernel_print_hex */ (void)(op);
     kernel_print(" | State: SYNCED\n");
 
     switch(op) {

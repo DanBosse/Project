@@ -1,74 +1,46 @@
-extern void phasecore_init(void);
 #include <stdint.h>
-#include "kernel.h"
-#include "ipc.h"
+#include <stdbool.h>
+#include "multiboot.h"
 
-#define PORT 0x3F8
+void vga_init(void);
+void vga_print(const char* str);
+void serial_init(void);
+char serial_read(void);
+void cli_print_prompt(void);
+void cli_handle_char(char c);
 
-extern void serial_init(void);
-extern void serial_write(char c);
-extern void init_idt(void);
-extern uint8_t inb(uint16_t port);
-extern void shell_dispatch_command(const char *cmd_line);
+void spatial_compositor_init(uint32_t *fb, uint32_t width, uint32_t height, uint32_t pitch);
+void spatial_compositor_render_frame(void);
 
-// Bind serial_print to use serial_write so command_registry.c can print natively
-void serial_print(const char *str) {
-    for (int i = 0; str[i] != '\0'; i++) {
-        serial_write(str[i]);
-    }
-}
+void kernel_main(uint32_t magic, struct multiboot_info* mb_info) {
+    vga_init();
+    serial_init();
+    vga_print("[TORUSOS] Initializing Spatial Compositor Architecture...\n");
 
-void kernel_init(void) {
-    serial_init();     
-    init_idt();        
-    ipc_init();
-    phasecore_init();
-}
+    uint32_t *lfb = (uint32_t*)0xE0000000;
+    uint32_t width = 1024, height = 768, pitch = 1024 * 4;
 
-void kernel_main(void) {
-    kernel_init();
-
-    serial_print("\r\n[TorusOS] Sovereign Kernel Booted Successfully! Type 'help' for options:\r\n> ");
-
-    #define CMD_BUFFER_SIZE 128
-    char cmd_buffer[CMD_BUFFER_SIZE];
-    int cmd_index = 0;
-    for (int i = 0; i < CMD_BUFFER_SIZE; i++) cmd_buffer[i] = 0;
-
-    while (1) {
-        if (inb(PORT + 5) & 0x01) {
-            char c = inb(PORT);
-
-            // Echo character back
-            if (c >= 32 && c < 127) {
-                if (cmd_index < CMD_BUFFER_SIZE - 1) {
-                    cmd_buffer[cmd_index++] = c;
-                    serial_write(c);
-                }
-            } 
-            // Handle Backspace
-            else if (c == '\b' || c == 127) {
-                if (cmd_index > 0) {
-                    cmd_index--;
-                    cmd_buffer[cmd_index] = '\0';
-                    serial_print("\b \b");
-                }
-            } 
-            // Handle Enter (CR or LF)
-            else if (c == '\r' || c == '\n') {
-                serial_print("\r\n");
-                cmd_buffer[cmd_index] = '\0';
-
-                if (cmd_buffer[0] != '\0') {
-                    // Dispatch directly to your master registry in command_registry.c
-                    shell_dispatch_command(cmd_buffer);
-                }
-
-                // Reset buffer and print prompt again
-                cmd_index = 0;
-                for (int i = 0; i < CMD_BUFFER_SIZE; i++) cmd_buffer[i] = 0;
-                serial_print("> ");
-            }
+    if (mb_info && (mb_info->flags & (1 << 12))) {
+        if (mb_info->framebuffer_addr != 0) {
+            lfb = (uint32_t*)(uintptr_t)mb_info->framebuffer_addr;
+            width = mb_info->framebuffer_width;
+            height = mb_info->framebuffer_height;
+            pitch = mb_info->framebuffer_pitch;
+            vga_print("[TORUSOS] Bootloader LFB Handover Successful.\n");
         }
+    }
+
+    // Initialize compositor with the active hardware LFB
+    spatial_compositor_init(lfb, width, height, pitch);
+    spatial_compositor_render_frame();
+
+    vga_print("[TORUSOS] Spatial Compositor active. CLI integrated.\n");
+    cli_print_prompt();
+    
+    while (1) {
+        char c = serial_read();
+        cli_handle_char(c);
+        // Refresh the graphical frame on every key event / command loop iteration
+        spatial_compositor_render_frame();
     }
 }

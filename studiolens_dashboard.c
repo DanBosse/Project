@@ -1,3 +1,4 @@
+#include "spatial_compositor.h"
 #include "studiolens_dashboard.h"
 #include "torus.h"
 #include "enterprise_telemetry.h"
@@ -7,6 +8,8 @@ extern bool auraspring_rt_run(uint32_t bodies, uint32_t sub_steps);
 extern void spatial_compositor_render(uint32_t flags);
 
 void studiolens_render_telemetry_dashboard(void) {
+    // Render the 5-window spatial compositor desktop GUI view
+    spatial_compositor_render(0);
     serial_print("\n=================================================================\n");
     serial_print("           TorusOS StudioLens Comprehensive Telemetry Center       \n");
     serial_print("=================================================================\n");

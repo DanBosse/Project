@@ -11,7 +11,7 @@ void scheduleTPA_init(void) {
     kernel_print("[ScheduleTPA] Initializing Layer 0 Twin Prime Memory Pools & Scheduling Spacing (Δ = 2)...\n");
 }
 
-uint64_t scheduleTPA_alloc_block(size_t size) {
+uint64_t scheduleTPA_alloc_block(uint64_t size) {
     // Enforce twin-prime spacing invariant (delta = 2 alignment padding)
     uint64_t aligned_size = (size + 1) & ~1ULL;
     uint64_t allocated = next_free_addr;

@@ -19,7 +19,7 @@ int char_starts_with_studio(const char* str, const char* prefix) {
 void studiolens_init(void) {
     studio_core_init();
     serial_print("[StudioLens] Initializing Tripartite StudioLens Environment...\n");
-    spatial_compositor_init();
+    spatial_compositor_init((uint32_t*)0xE0000000, 1024, 768, 1024 * 4);
     aurascript_init();
     triconjectural_init();
 }
@@ -52,7 +52,7 @@ void studiolens_spawn_window(const char* title, uint32_t x, uint32_t y, uint32_t
     serial_print("[StudioLens] Spawning tripartite panel -> ");
     serial_print(title ? title : "SearchPanel");
     serial_print("\n");
-    spatial_compositor_render(current_layout);
+    spatial_compositor_render_frame();
 }
 
 void studiolens_render_workspace(const char* workspace_name) {
@@ -60,7 +60,7 @@ void studiolens_render_workspace(const char* workspace_name) {
         studiolens_set_workspace(workspace_name);
     }
     serial_print("[StudioLens] Rendering active Tripartite Search Workspace...\n");
-    spatial_compositor_render(current_layout);
+    spatial_compositor_render_frame();
     serial_print("[Tripartite Convergence] Data Files | Internet | OS panels active.\n");
 }
 
