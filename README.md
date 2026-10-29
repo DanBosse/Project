@@ -1,19 +1,23 @@
-The above was designed using the path integral to guide a deterministic kernel and operating system. 
-Geometry, Geodesics, Physics and Advanced Mathematics will converge in a physics studio with a CAD approach to the 
-topological graphics engine
+# TorusOS
 
+TorusOS is an experimental operating system prototype focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem model.
 
-1 type help in terminal. 
-2 type studiolens,
-3 then check the gui.
+## Current Status & Milestones
 
-4 Have fun exploring!
+TorusOS is currently at Milestone M18 ("Sovereign Convergence").
 
+### What is real today:
+- Bare-metal x86 boot path
+- Multiboot kernel entry
+- GRUB-based ISO packaging
+- C/assembly kernel source tree
+- Direct framebuffer rendering prototype (Tier 6 Spatial Compositor)
+- PhysicsLab real-time simulation experiments
+- Architecture for subsystem separation and accelerator routing
 
-trust_core - Verifies architectural attestation, cryptographic validation, and subsystem integrity.
+### Build and Run
 
-
-<!--START_SECTION:milestones-->
-### Core Platform Readiness
-`[░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░░]` **0%** (0/0 Milestones Complete)
-<!--END_SECTION:milestones-->
+```bash
+./build_iso.sh
+qemu-system-x86_64 -cdrom torus-aura-master.iso -m 2G -vga std -serial stdio
+```
