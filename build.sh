@@ -5,6 +5,8 @@ echo "[1/5] Cleaning stale object artifacts..."
 rm -f *.o *.elf *.iso
 
 echo "[2/5] Assembling Bootstrap & Compiling Subsystems..."
+gcc -m32 -c trust_sentinel.c -o trust_sentinel.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c sentinel_tensor_av.c -o sentinel_tensor_av.o -ffreestanding -O2 -Wall -Wextra -I.
 gcc -m32 -c boot.s -o boot.o
 gcc -m32 -c idt_s.s -o idt_s.o
 gcc -m32 -c kernel.c -o kernel.o -ffreestanding -O2 -Wall -Wextra
@@ -36,10 +38,16 @@ gcc -m32 -c mm.c -o mm.o -ffreestanding -O2 -Wall -Wextra
 gcc -m32 -c gdt.c -o gdt.o -ffreestanding -O2 -Wall -Wextra
 gcc -m32 -c gpf.c -o gpf.o -ffreestanding -O2 -Wall -Wextra
 gcc -m32 -c kernel_utils.c -o kernel_utils.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c trust_core_pqc.c -o trust_core_pqc.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c omni_envelope_receive.c -o omni_envelope_receive.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c trust_core_cli.c -o trust_core_cli.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c trust_core_pqc.c -o trust_core_pqc.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c omni_envelope_receive.c -o omni_envelope_receive.o -ffreestanding -O2 -Wall -Wextra
+gcc -m32 -c trust_core_cli.c -o trust_core_cli.o -ffreestanding -O2 -Wall -Wextra
 gcc -m32 -c studiolens_dashboard.c -o studiolens_dashboard.o -ffreestanding -O2 -Wall -Wextra
 
 echo "[3/5] Linking Master Image..."
-ld -m elf_i386 -T linker.ld -o torus_kernel.elf boot.o idt_s.o kernel.o idt.o keyboard.o command_registry.o telemetry_handlers.o audio_studio.o aura.o aura_link.o auracad.o aurascript.o graphics.o net_stack.o framebuffer.o studio_core.o vfs.o ring_handshake.o phasecore.o phasecore_interpreter.o studiolens.o spatial_compositor.o triconjectural.o enterprise_telemetry.o vga.o serial.o cli.o mm.o gdt.o gpf.o kernel_utils.o studiolens_dashboard.o --gc-sections
+ld -m elf_i386 -T linker.ld -o torus_kernel.elf boot.o idt_s.o kernel.o idt.o keyboard.o command_registry.o telemetry_handlers.o audio_studio.o aura.o aura_link.o auracad.o aurascript.o graphics.o net_stack.o framebuffer.o studio_core.o vfs.o ring_handshake.o phasecore.o phasecore_interpreter.o studiolens.o spatial_compositor.o triconjectural.o enterprise_telemetry.o vga.o serial.o cli.o mm.o gdt.o gpf.o kernel_utils.o trust_core_pqc.o omni_envelope_receive.o trust_core_cli.o trust_sentinel.o sentinel_tensor_av.o studiolens_dashboard.o --gc-sections
 
 echo "[4/5] Setting up Bootloader & ISO Directory Structure..."
 mkdir -p iso/boot/grub
@@ -57,3 +65,6 @@ echo ""
 echo "[=========================================================]"
 echo "        TorusOS Master ISO & Kernel Built Successfully!    "
 echo "[=========================================================]"
+
+# --- SentinelLens IT Security Module Compilation ---
+gcc -m32 -c trust_sentinel.o -o trust_sentinel.o -ffreestanding -O2 -Wall -Wextra 2>/dev/null || true
