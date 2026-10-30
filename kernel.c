@@ -1,47 +1,68 @@
 #include <stdint.h>
-#include <stdbool.h>
-#include "multiboot.h"
+#include "kernel_utils.h"
 
-void vga_init(void);
-void vga_print(const char* str);
-void serial_init(void);
-char serial_read(void);
-void cli_print_prompt(void);
-void cli_handle_char(char c);
+// External CLI functions
+extern void cli_execute(char *input);
 
-void spatial_compositor_init(uint32_t *fb, uint32_t width, uint32_t height, uint32_t pitch);
-void spatial_compositor_render_frame(void);
+static char input_buffer[256];
+static int buffer_index = 0;
 
-void kernel_main(uint32_t magic, struct multiboot_info* mb_info) {
-    (void)magic;
-    vga_init();
-    serial_init();
-    vga_print("[TORUSOS] Initializing Spatial Compositor Architecture...\n");
+// External port read function (from ports.c)
+extern uint8_t inb(uint16_t port);
 
-    uint32_t *lfb = (uint32_t*)0xE0000000;
-    uint32_t width = 1024, height = 768, pitch = 1024 * 4;
+void cli_print_prompt(void) {
+    kernel_print("torus-aura> ");
+}
 
-    if (mb_info && (mb_info->flags & (1 << 12))) {
-        if (mb_info->framebuffer_addr != 0) {
-            lfb = (uint32_t*)(uintptr_t)mb_info->framebuffer_addr;
-            width = mb_info->framebuffer_width;
-            height = mb_info->framebuffer_height;
-            pitch = mb_info->framebuffer_pitch;
-            vga_print("[TORUSOS] Bootloader LFB Handover Successful.\n");
+void cli_handle_char(char c) {
+    if (c == '\n' || c == '\r') {
+        kernel_print("\n");
+        input_buffer[buffer_index] = '\0';
+        
+        if (buffer_index > 0) {
+            cli_execute(input_buffer);
+            buffer_index = 0;
+        }
+        
+        cli_print_prompt();
+    } else if (c == '\b' || c == 127) { // Backspace
+        if (buffer_index > 0) {
+            buffer_index--;
+            kernel_print("\b \b");
+        }
+    } else {
+        if (buffer_index < (int)sizeof(input_buffer) - 1) {
+            input_buffer[buffer_index++] = c;
+            char s[2] = {c, '\0'};
+            kernel_print(s);
         }
     }
+}
 
-    // Initialize compositor with the active hardware LFB
-    spatial_compositor_init(lfb, width, height, pitch);
-    spatial_compositor_render_frame();
+// Check if serial data is ready on COM1 (port 0x3F8 + 5)
+int serial_received(void) {
+    return inb(0x3F8 + 5) & 1;
+}
 
-    vga_print("[TORUSOS] Spatial Compositor active. CLI integrated.\n");
-    cli_print_prompt();
+// Read character from COM1 (port 0x3F8)
+char read_serial(void) {
+    return inb(0x3F8);
+}
+
+void kernel_main(void) {
+    kernel_print("\033[H\033[J");
+    kernel_print("=========================================================\n");
+    kernel_print("          TORUSOS AURA MASTER INITIALIZED (RING 0)       \n");
+    kernel_print("=========================================================\n");
     
+    cli_print_prompt();
+
+    // Main kernel loop with serial polling
     while (1) {
-        char c = serial_read();
-        cli_handle_char(c);
-        // Refresh the graphical frame on every key event / command loop iteration
-        spatial_compositor_render_frame();
+        if (serial_received()) {
+            char c = read_serial();
+            cli_handle_char(c);
+        }
+        __asm__ volatile ("pause");
     }
 }

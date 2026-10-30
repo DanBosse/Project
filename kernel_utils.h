@@ -3,7 +3,7 @@
 
 #include <stdint.h>
 
-void kernel_print(const char* str);
-void kernel_print_hex(uint64_t val);
+void kernel_putchar(char c);
+void kernel_print(const char *str);
 
 #endif

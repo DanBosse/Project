@@ -1,17 +1,15 @@
-OUTPUT_FORMAT(elf32-i386)
 ENTRY(_start)
 
-SECTIONS
-{
+SECTIONS {
     . = 1M;
 
     .text : {
-        KEEP(*(.multiboot))
+        *(.multiboot)
         *(.text)
     }
 
     .rodata : {
-        *(.rodata)
+        *(.rodata*)
     }
 
     .data : {
