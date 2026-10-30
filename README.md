@@ -2,6 +2,11 @@
 
 TorusOS is an experimental operating system prototype focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem model.
 
+This is an unfinished OS that is being designed in Ascii with Geometry Math and Art with a Graphic Studio, Physics Studio, Visual Studio, Audio Studio, and built-in AI. It is being designed for the end user to create programs with a library equal to C++, Java, JavaScript and better than Python commands.
+
+The Desktop has CSS layers and will open instantly. The ability to create programs is as quick as drag-and-drop.
+
+
 ## Current Status & Milestones
 
 TorusOS is currently at Milestone M18 ("Sovereign Convergence").
