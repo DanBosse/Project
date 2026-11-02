@@ -1,6 +1,7 @@
 # TorusOS
 
-TorusOS is an experimental operating system prototype focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem model.
+TorusOS is an experimental operating system prototype focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem STATE model.
+This means everything runs synchronous and instantly. Not a traditional OS
 
 This is an unfinished OS that is being designed in Ascii with Geometry Math and Art with a Graphic Studio, Physics Studio, Visual Studio, Audio Studio, and built-in AI. It is being designed for the end user to create programs with a library equal to C++, Java, JavaScript and better than Python commands.
 
