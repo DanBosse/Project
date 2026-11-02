@@ -18,13 +18,15 @@ Unified development environment for graphics, physics, audio, and simulation
 Creative Environment
 
 TorusOS is being designed as a complete creation platform rather than a traditional desktop environment.
-
+With an extensive office, server, shared and internet capabilities.
 Planned integrated environments include:
 
 StudioLens (Spatial Graphics Studio)
 PhysicsLab (Simulation & Modeling Studio)
 Audio Studio
-Visual Studio
+Video Studio
+Graphics Studio
+Office Studio
 AI Development Environment
 Geometry and ASCII-based design tools
 
