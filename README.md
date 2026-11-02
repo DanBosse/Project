@@ -1,27 +1,34 @@
-# TorusOS
+ TorusOS
 
-TorusOS is an experimental operating system prototype focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem STATE MACHINE model.
-This means everything runs synchronous and instantly. Not a traditional OS
+TorusOS is an experimental operating system focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem state-machine architecture.
 
-This is an unfinished OS that is being designed in Ascii with Geometry Math and Art with a Graphic Studio, Physics Studio, Visual Studio, Audio Studio, and built-in AI. It is being designed for the end user to create programs with a library equal to C++, Java, JavaScript and better than Python commands.
+Unlike traditional operating systems, TorusOS is designed around synchronized subsystems, geometric modeling, and real-time state visualization. The project explores an architecture where independent modules operate through a unified lattice framework while maintaining fault isolation and autonomous recovery.
 
-The Desktop has CSS layers and will open instantly. The ability to create programs is as quick as drag-and-drop.
+The long-term vision is a creative computing environment where applications, simulations, graphics, audio, AI, and development tools operate as integrated subsystems rather than disconnected software stacks.
 
+Design Goals
+Deterministic runtime execution
+Rapid system startup and instant subsystem activation
+Hardware-aware scheduling and routing
+Spatial graphics and geometric visualization
+Autonomous subsystem recovery and self-healing
+Integrated AI-assisted workflows
+Drag-and-drop application creation
+Unified development environment for graphics, physics, audio, and simulation
+Creative Environment
 
-## Current Status & Milestones
+TorusOS is being designed as a complete creation platform rather than a traditional desktop environment.
 
-TorusOS is currently at Milestone M18 ("Sovereign Convergence").
+Planned integrated environments include:
 
-### What is real today:
-- Bare-metal x86 boot path
-- Multiboot kernel entry
-- GRUB-based ISO packaging
-- C/assembly kernel source tree
-- Direct framebuffer rendering prototype (Tier 6 Spatial Compositor)
-- PhysicsLab real-time simulation experiments
-- Architecture for subsystem separation and accelerator routing
+StudioLens (Spatial Graphics Studio)
+PhysicsLab (Simulation & Modeling Studio)
+Audio Studio
+Visual Studio
+AI Development Environment
+Geometry and ASCII-based design tools
 
-### Build and Run
+The objective is to allow users to create software, simulations, visualizations, and interactive applications through integrated tooling with a command library intended to rival the usability of modern C++, Java, JavaScript, and Python ecosystems.
 
 ```bash
 ./build_iso.sh
