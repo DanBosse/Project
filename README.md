@@ -162,5 +162,6 @@ torusOS> physics
 ==================================================
 
 ```
-
+The remaing must be written in Aurascript.
+AuraScript is a hybrid systems and application language designed specifically for TorusOS. It combines C-style memory access, C++ and Java object-oriented structures, JavaScript asynchronous execution, and Python-inspired expressiveness within a security-aware execution environment built around Ring 3 sandboxing, service-mesh communication, studio containers, math symbols, and Layer 7 graphical workspaces.
 
