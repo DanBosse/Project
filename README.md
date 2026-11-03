@@ -35,6 +35,23 @@ Here is the complete, command reference, active services, tensor routing groups,
 orus-aura-master.iso -m 2G -vga std -serial stdio
 
 ```text
+rm -f *.o torusos.bin
+dan@workStation-01:~/Project$ make
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c kernel.c -o kernel.o
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c kernel_main.c -o kernel_main.o
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c tensor_groups.c -o tensor_grouo
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c services.c -o services.o
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c containers.c -o containers.o
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c physics_studio.c -o physics_sto
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c media.c -o media.o
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c network.c -o network.o
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c display_server.c -o display_seo
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c system_monitor.c -o system_mono
+gcc -m32 -ffreestanding -O2 -Wall -Wextra -std=gnu99 -fno-pie -fno-stack-protector -c graphics_gui.c -o graphics_guio
+nasm -f elf32 boot.asm -o boot.o
+ld -m elf_i386 -nostdlib -T linker.ld kernel.o kernel_main.o tensor_groups.o services.o containers.o physics_studio.n
+dan@workStation-01:~/Project$
+
 The below is using Qemu
 That is why the settings are low.
 
