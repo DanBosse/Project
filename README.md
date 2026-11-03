@@ -1,4 +1,4 @@
- TorusOS
+  TorusOS
 
 TorusOS is an experimental operating system focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem STATE-MACHINE architecture.
 
