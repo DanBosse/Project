@@ -27,7 +27,12 @@ Audio Studio
 Video Studio
 Graphics Studio
 Office Studio
-AI Development EnvironmentHere is the complete, uninterrupted TorusOS boot sequence, command reference, active services, tensor routing groups, pipeline execution, StudioLens telemetry, and Physics Studio interactive menu including the SeaBIOS and iPXE headers:
+Geometry and ASCII-based design tools
+AI Development Environment
+
+Here is the complete, command reference, active services, tensor routing groups, pipeline execution, StudioLens telemetry, and Physics Studio interactive menu including the SeaBIOS and iPXE headers:
+
+orus-aura-master.iso -m 2G -vga std -serial stdio
 
 ```text
 The below is using Qemu
@@ -157,7 +162,5 @@ torusOS> physics
 ==================================================
 
 ```
-Geometry and ASCII-based design tools
 
- orus-aura-master.iso -m 2G -vga std -serial stdioHere is the complete and exact output, starting from the SeaBIOS and iPXE initialization sequence all through the TorusOS boot and command reference:
 
