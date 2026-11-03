@@ -30,6 +30,9 @@ Office Studio
 AI Development EnvironmentHere is the complete, uninterrupted TorusOS boot sequence, command reference, active services, tensor routing groups, pipeline execution, StudioLens telemetry, and Physics Studio interactive menu including the SeaBIOS and iPXE headers:
 
 ```text
+The below is using Qemu
+That is why the settings are low.
+
 SeaBIOS (version 1.15.0-1)
 
 
