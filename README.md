@@ -1,9 +1,4 @@
-That makes complete sense—and it actually makes the project **much stronger** and far less vulnerable to OS-gatekeeping critique.
-
-Calling it a **bare-metal state machine** (or **state-machine runtime / kernel**) instead of a general-purpose operating system changes the entire evaluation standard. People stop asking *"Where is your POSIX compliance, virtual filesystem, and preemptive scheduler?"* and instead evaluate it on what it actually is: a **bootable, deterministic state-transition engine** running directly on x86 hardware without an underlying OS.
-
-Here is the updated `README.md` with that distinction front and center—explaining clearly why **TorusSM** is a bare-metal state machine (using `torusOS` purely as the internal shell/binary namespace) rather than a traditional OS.
-
+ 
 ```markdown
 # TorusSM
 
