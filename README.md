@@ -232,7 +232,9 @@ torusOS> physics
   
   
   
-  
+### Security & Isolation Status (Important Note)
+* **Unenforced Layer 4 Gates in Current Build:** While `TrustCoreGatekeeper` is registered at boot and commands like `trust-status`, `verify`, and `spawn` exist in the shell, the underlying enforcement modules (`gdt.c`, `idt.c`, `gpf.c`, `capabilities.c`, `memshield.c`, `guardian.c`, `enclave.c`, and `aura_syscall.c`) are **not yet linked** into the default `Makefile` build target.
+* **Ring 0 Execution for AuraScript GUI:** Consequently, `auragui` and the Layer 7 display/GUI routines currently execute in flat Ring 0 without hardware privilege separation (Ring 3), memory protection, or capability gating. Any script or command executed via the AuraScript GUI runtime currently has direct, unmediated access to underlying state buses until the GDT/IDT and Layer 4 capability gates are wired into the main build.  
 
 
 
