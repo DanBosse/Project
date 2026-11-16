@@ -1,6 +1,6 @@
-  TorusOS
+  TorusSM
 
-TorusOS is an experimental operating system focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem STATE-MACHINE architecture.
+TorusSM is an experimental operating system focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem STATE-MACHINE architecture.
 
 Unlike traditional operating systems, TorusOS is designed around synchronized subsystems, geometric modeling, and real-time state visualization. The project explores an architecture where independent modules operate through a unified lattice framework while maintaining fault isolation and autonomous recovery.
 
@@ -17,7 +17,7 @@ Drag-and-drop application creation
 Unified development environment for graphics, physics, audio, and simulation
 Creative Environment
 
-TorusOS is being designed as a complete creation platform rather than a traditional desktop environment.
+TorusSM is being designed as a complete creation platform rather than a traditional desktop environment.
 With an extensive office, server, shared and internet capabilities.
 Planned integrated environments include:
 
@@ -168,7 +168,7 @@ torusOS> studiolens
 [StudioLens] Optical telemetry lens engaged across studios. Active.
 torusOS> physics
 ==================================================
-  TorusOS Physics Studio Interactive Module
+  TorusSM Physics Studio Interactive Module
 ==================================================
   Commands:
     sim     - Run multi-body particle lab simulation
@@ -181,4 +181,8 @@ torusOS> physics
 ```
 The remaing must be written in Aurascript.
 AuraScript is a hybrid systems and application language designed specifically for TorusOS. It combines C-style memory access, C++ and Java object-oriented structures, JavaScript asynchronous execution, and Python-inspired expressiveness within a security-aware execution environment built around Ring 3 sandboxing, service-mesh communication, studio containers, math symbols, and Layer 7 graphical workspaces.
+
+ON HOLD FOR A WHILE
+IT IS A HOBBY KERNEL BASED ON GEOMETRY AND LAGRANGIAN MECHANICS. 
+IT SEEMS TO RUN FINE AND THERE IS TOO MUCH TO DO WITHOUT THE PROPER EQUIPMENT.
 
