@@ -2,7 +2,7 @@
 
 TorusSM is an experimental operating system focused on fast boot, deterministic runtime behavior, spatial graphics, and a hardware-aware subsystem STATE-MACHINE architecture.
 
-Unlike traditional operating systems, TorusOS is designed around synchronized subsystems, geometric modeling, and real-time state visualization. The project explores an architecture where independent modules operate through a unified lattice framework while maintaining fault isolation and autonomous recovery.
+Unlike traditional operating systems, TorusSM is designed around synchronized subsystems, geometric modeling, and real-time state visualization. The project explores an architecture where independent modules operate through a unified lattice framework while maintaining fault isolation and autonomous recovery.
 
 The long-term vision is a creative computing environment where applications, simulations, graphics, audio, AI, and development tools operate as integrated subsystems rather than disconnected software stacks.
 
